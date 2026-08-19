@@ -58,6 +58,18 @@ class TradingFlowsTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "lưu cài đặt ghi vào preferences của user hiện tại" do
+    patch settings_path, params: {
+      buy_fee_pct: "0.2", sell_fee_pct: "0.15", sell_tax_pct: "0.1",
+      ai_model: "claude-opus-5", ai_enabled: "1"
+    }
+    assert_redirected_to settings_path
+    @user.reload
+    assert_equal 0.002, @user.pref("buy_fee_rate")
+    assert_equal "claude-opus-5", @user.ai_model
+    assert @user.ai_enabled?
+  end
+
   test "dashboard, positions, reports render 200" do
     [root_path, positions_path, reports_path, trades_path, stocks_path, cash_flows_path,
      settings_path, ai_insights_path, ai_coach_path].each do |path|
