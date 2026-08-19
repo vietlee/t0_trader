@@ -11,10 +11,10 @@
   <div class="flash flash-alert mb-5">Chưa cấu hình <code>ANTHROPIC_API_KEY</code>. Thêm biến môi trường này để bật AI Coach.</div>
 <% end %>
 
-<div class="card coach-card">
-  <div class="coach-body" id="chat-scroll">
+<div class="card coach-card" data-controller="coach">
+  <div class="coach-body" id="chat-scroll" data-coach-target="body">
     <% if @messages.empty? %>
-      <div style="margin:auto;text-align:center;padding:20px 10px;max-width:520px">
+      <div style="margin:auto;text-align:center;padding:20px 10px;max-width:520px" data-coach-target="empty">
         <div style="width:52px;height:52px;border-radius:14px;margin:0 auto 14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:grid;place-items:center;font-size:24px">✦</div>
         <div style="font-size:16px;font-weight:700;color:#f3f7fc">Trợ lý phân tích danh mục</div>
         <div style="font-size:13.5px;color:#8595b4;margin-top:4px">Chọn một gợi ý hoặc gõ câu hỏi của bạn ở dưới.</div>
@@ -25,21 +25,20 @@
           <% end %>
         </div>
       </div>
-    <% else %>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <% @messages.each do |m| %>
-          <div class="chat-msg <%= m.role_user? ? 'chat-user' : 'chat-ai' %>">
-            <% if m.role_assistant? %><div class="md"><%= simple_markdown(m.content) %></div><% else %><%= simple_format(m.content) %><% end %>
-          </div>
-        <% end %>
-      </div>
     <% end %>
+    <div class="chat-list" data-coach-target="list" style="display:flex;flex-direction:column;gap:14px">
+      <% @messages.each do |m| %>
+        <div class="chat-msg <%= m.role_user? ? 'chat-user' : 'chat-ai' %>">
+          <% if m.role_assistant? %><div class="md"><%= simple_markdown(m.content) %></div><% else %><%= simple_format(m.content) %><% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="coach-input-row">
-    <%= form_with url: ai_coach_message_path, method: :post, class: "flex gap-3", data: { turbo: false } do %>
-      <%= text_field_tag :content, nil, id: "coach-input", class: "form-input", placeholder: "Nhập câu hỏi về danh mục của bạn…", autofocus: true, disabled: !@configured, autocomplete: "off" %>
-      <%= submit_tag "Gửi", class: "btn btn-primary", disabled: !@configured %>
+    <%= form_with url: ai_coach_message_path, method: :post, class: "flex gap-3", data: { turbo: false, action: "submit->coach#submit" } do %>
+      <%= text_field_tag :content, nil, id: "coach-input", class: "form-input", placeholder: "Nhập câu hỏi về danh mục của bạn…", autofocus: true, disabled: !@configured, autocomplete: "off", data: { coach_target: "input" } %>
+      <%= submit_tag "Gửi", class: "btn btn-primary", disabled: !@configured, data: { coach_target: "send" } %>
     <% end %>
   </div>
 </div>

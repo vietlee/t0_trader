@@ -12,10 +12,10 @@
 
 <div class="card mb-4" style="background:linear-gradient(180deg, rgba(99,102,241,.1), rgba(15,20,32,.9)); border-color:rgba(99,102,241,.28)">
   <div class="flex items-center gap-2" style="margin-bottom:10px"><span style="font-size:18px">✦</span><span style="font-weight:700;color:#c4b5fd">Ghi nhanh bằng AI</span></div>
-  <%= form_with url: quick_trades_path, method: :post do %>
-    <%= text_field_tag :text, nil, class: "form-input", style: "width:100%",
+  <%= form_with url: quick_trades_path, method: :post, class: "quick-ai-form" do %>
+    <%= text_field_tag :text, nil, class: "form-input",
           placeholder: '"đã mua BSR giá 23k" · "bán 2000 HPG giá 27"', autocomplete: "off" %>
-    <%= submit_tag "Tạo bằng AI", class: "btn btn-primary", style: "width:100%;justify-content:center;margin-top:10px" %>
+    <%= submit_tag "Tạo bằng AI", class: "btn btn-primary" %>
   <% end %>
   <div class="form-hint mt-2">AI tự nhận diện mua/bán, mã và giá. Thiếu khối lượng sẽ mở form điền nốt.</div>
 </div>
