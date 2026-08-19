@@ -1,0 +1,16 @@
+<%# locals: data (mảng [label, value_int]), colors (mảng màu) %>
+<% total = data.sum { |_, v| v }.to_f %>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:12px">
+  <% data.each_with_index do |(label, value), i| %>
+    <div class="flex items-center justify-between" style="font-size:13.5px">
+      <span class="flex items-center gap-2" style="min-width:0">
+        <span class="tag-dot" style="background:<%= colors[i % colors.size] %>;flex-shrink:0"></span>
+        <span style="color:#c7d3e8;overflow:hidden;text-overflow:ellipsis"><%= label %></span>
+      </span>
+      <span style="text-align:right;white-space:nowrap;padding-left:10px">
+        <span style="color:#f3f7fc;font-weight:600"><%= vnd(value) %></span>
+        <span style="color:#7182a3;font-size:12px"> · <%= total.zero? ? 0 : (value * 100.0 / total).round(1) %>%</span>
+      </span>
+    </div>
+  <% end %>
+</div>

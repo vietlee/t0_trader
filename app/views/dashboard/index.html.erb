@@ -109,7 +109,7 @@
 </div>
 
 <!-- Biểu đồ tổng quan -->
-<% donut_lib = { plugins: { legend: { position: "bottom", labels: { color: "#aab6d0", padding: 12, font: { size: 12 } } } } } %>
+<% donut_lib = { plugins: { legend: { display: false } } } %>
 <% bar_lib = { scales: { x: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } }, y: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } } }, plugins: { legend: { display: false } } } %>
 <% palette = ["#10b981", "#38bdf8", "#a78bfa", "#f59e0b", "#f43f5e", "#22d3ee", "#84cc16", "#e879f9", "#fb923c", "#2dd4bf"] %>
 
@@ -117,7 +117,8 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Phân bổ danh mục theo mã</div></div>
     <% if @allocation.any? %>
-      <%= pie_chart @allocation, donut: true, height: "300px", colors: palette, library: donut_lib, suffix: " đ" %>
+      <%= pie_chart @allocation, donut: true, height: "240px", colors: palette, library: donut_lib, suffix: " đ" %>
+      <%= render "donut_breakdown", data: @allocation, colors: palette %>
     <% else %>
       <div class="empty-state">Chưa có cổ phiếu đang giữ.</div>
     <% end %>
@@ -126,7 +127,8 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Cơ cấu tài sản</div></div>
     <% if @asset_mix.any? %>
-      <%= pie_chart @asset_mix, donut: true, height: "300px", colors: ["#38bdf8", "#10b981"], library: donut_lib, suffix: " đ" %>
+      <%= pie_chart @asset_mix, donut: true, height: "240px", colors: ["#38bdf8", "#10b981"], library: donut_lib, suffix: " đ" %>
+      <%= render "donut_breakdown", data: @asset_mix, colors: ["#38bdf8", "#10b981"] %>
     <% else %>
       <div class="empty-state">Chưa có dữ liệu.</div>
     <% end %>
