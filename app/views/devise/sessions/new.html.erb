@@ -9,6 +9,11 @@
   </div>
   <div class="mb-4">
     <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu", autocomplete: "current-password" %>
+    <% if devise_mapping.recoverable? %>
+      <div style="text-align:right;margin-top:6px">
+        <%= link_to "Quên mật khẩu?", new_password_path(resource_name), style: "font-size:12.5px;color:#8595b4" %>
+      </div>
+    <% end %>
   </div>
   <% if devise_mapping.rememberable? %>
     <label class="flex items-center gap-2 mb-5" style="cursor:pointer;font-size:13.5px;color:#c7d3e8">

@@ -39,7 +39,7 @@
         <% if alert %><div class="flash flash-alert"><%= alert %></div><% end %>
         <%= yield %>
       </main>
-      <%= render "layouts/quick_trade" %>
+      <% unless content_for?(:hide_fab) %><%= render "layouts/quick_trade" %><% end %>
     </div>
   </body>
 </html>

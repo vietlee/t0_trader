@@ -8,7 +8,13 @@ class ApplicationController < ActionController::Base
   helper_method :current_account
 
   def resolve_layout
-    devise_controller? ? "auth" : "application"
+    # Trang chưa đăng nhập (login/đăng ký/quên mật khẩu) dùng layout auth (thẻ giữa màn hình);
+    # trang hồ sơ (đổi email/mật khẩu khi đã đăng nhập) dùng layout app bình thường (có sidebar).
+    if devise_controller? && !user_signed_in?
+      "auth"
+    else
+      "application"
+    end
   end
 
   private

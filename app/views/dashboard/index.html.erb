@@ -108,76 +108,45 @@
   </div>
 </div>
 
-<!-- Positions + side -->
-<div class="grid gap-5" style="grid-template-columns: 1.6fr 1fr;">
+<!-- Biểu đồ tổng quan -->
+<% donut_lib = { plugins: { legend: { position: "bottom", labels: { color: "#aab6d0", padding: 12, font: { size: 12 } } } } } %>
+<% bar_lib = { scales: { x: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } }, y: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } } }, plugins: { legend: { display: false } } } %>
+<% palette = ["#10b981", "#38bdf8", "#a78bfa", "#f59e0b", "#f43f5e", "#22d3ee", "#84cc16", "#e879f9", "#fb923c", "#2dd4bf"] %>
+
+<div class="grid gap-5" style="grid-template-columns: 1fr 1fr;">
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">Vị thế đang mở</div>
-      <%= link_to "Xem tất cả →", positions_path, class: "chip" %>
-    </div>
-    <% if @positions.any? %>
-      <table class="data-table">
-        <thead><tr><th>Mã</th><th class="num">KL</th><th class="num">Giá vốn</th><th class="num">Giá TT</th><th class="num">Giá trị</th><th class="num">Lãi/lỗ</th></tr></thead>
-        <tbody>
-          <% @positions.first(7).each do |pos| %>
-            <tr>
-              <td class="sym"><%= pos.stock.symbol %><% if pos.pending_qty.positive? %> <span class="badge badge-pending" style="font-size:9px"><%= pos.pending_qty %> về</span><% end %></td>
-              <td class="num"><%= number_with_delimiter(pos.quantity, delimiter: ".") %></td>
-              <td class="num"><%= vnd(pos.avg_cost, unit: "") %></td>
-              <td class="num"><%= pos.market_price ? vnd(pos.market_price, unit: "") : "—" %></td>
-              <td class="num"><%= vnd_short(pos.market_value) %></td>
-              <td class="num"><%= pnl(pos.unrealized, short: true) %><br><span style="font-size:11px"><%= pnl_pct(pos.unrealized_pct) %></span></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+    <div class="card-header"><div class="card-title">Phân bổ danh mục theo mã</div></div>
+    <% if @allocation.any? %>
+      <%= pie_chart @allocation, donut: true, height: "300px", colors: palette, library: donut_lib, suffix: " đ" %>
     <% else %>
-      <div class="empty-state">Chưa có vị thế. <%= link_to "Ghi giao dịch đầu tiên", new_trade_path, style:"color:#6ee7b7" %></div>
+      <div class="empty-state">Chưa có cổ phiếu đang giữ.</div>
     <% end %>
   </div>
 
-  <div style="display:flex;flex-direction:column;gap:20px">
-    <!-- AI insight -->
-    <div class="card" style="background:linear-gradient(180deg, rgba(99,102,241,.12), rgba(15,20,32,.9)); border-color:rgba(99,102,241,.25)">
-      <div class="card-header">
-        <div class="card-title" style="color:#c4b5fd">✦ Nhận định AI</div>
-        <%= link_to "Mở →", ai_insights_path, class: "chip", style:"color:#c4b5fd" %>
-      </div>
-      <% if @latest_insight %>
-        <div style="font-size:12px;color:#8595b4;margin-bottom:6px"><%= @latest_insight.label %> · <%= @latest_insight.created_at.strftime("%d/%m %H:%M") %></div>
-        <div style="font-size:13.5px;color:#d3ddec;line-height:1.55;max-height:180px;overflow:auto">
-          <%= truncate(@latest_insight.content.to_s, length: 420) %>
-        </div>
-      <% else %>
-        <div style="font-size:13.5px;color:#9fb0cc;line-height:1.55">Chưa có phân tích. Để AI review nhật ký trade và chỉ ra thói quen lời/lỗ của bạn.</div>
-        <%= button_to "Chạy phân tích ngay", ai_insights_path(kind: "journal"), class: "btn btn-ghost btn-sm", style:"margin-top:12px" %>
-      <% end %>
-    </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Cơ cấu tài sản</div></div>
+    <% if @asset_mix.any? %>
+      <%= pie_chart @asset_mix, donut: true, height: "300px", colors: ["#38bdf8", "#10b981"], library: donut_lib, suffix: " đ" %>
+    <% else %>
+      <div class="empty-state">Chưa có dữ liệu.</div>
+    <% end %>
+  </div>
 
-    <!-- Recent trades -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Giao dịch gần đây</div>
-        <%= link_to "Tất cả →", trades_path, class: "chip" %>
-      </div>
-      <% if @recent_trades.any? %>
-        <div style="display:flex;flex-direction:column;gap:2px">
-          <% @recent_trades.each do |t| %>
-            <%= link_to edit_trade_path(t), class: "flex items-center justify-between", style: "padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.04);text-decoration:none" do %>
-              <span class="flex items-center gap-2">
-                <%= side_badge(t) %>
-                <span class="sym"><%= t.stock.symbol %></span>
-              </span>
-              <span style="text-align:right">
-                <span style="font-size:13px;color:#d3ddec"><%= number_with_delimiter(t.quantity, delimiter:".") %> × <%= vnd(t.price, unit:"") %></span><br>
-                <span style="font-size:11px;color:#7182a3"><%= t.traded_at.strftime("%d/%m") %> · <%= status_badge(t) %></span>
-              </span>
-            <% end %>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="empty-state">Chưa có giao dịch.</div>
-      <% end %>
-    </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Lời/lỗ chưa hiện thực theo mã</div></div>
+    <% if @unrealized_by_stock.any? %>
+      <%= column_chart @unrealized_by_stock, height: "280px", colors: ["#6366f1"], library: bar_lib, suffix: " đ" %>
+    <% else %>
+      <div class="empty-state">Chưa có vị thế có giá thị trường. <%= link_to "Cập nhật giá", stocks_path, style:"color:#6ee7b7" %></div>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Lời/lỗ đã hiện thực theo mã</div></div>
+    <% if @realized_by_stock.any? %>
+      <%= column_chart @realized_by_stock, height: "280px", colors: ["#10b981"], library: bar_lib, suffix: " đ" %>
+    <% else %>
+      <div class="empty-state">Chưa có lệnh đã đóng.</div>
+    <% end %>
   </div>
 </div>

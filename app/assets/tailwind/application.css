@@ -173,6 +173,14 @@
 .confirm-msg { font-size:14px; color:#c7d3e8; line-height:1.6; margin-bottom:20px; }
 .confirm-actions { display:flex; gap:10px; justify-content:flex-end; }
 
+/* ============ AI COACH FULL HEIGHT ============ */
+.coach-card { display:flex; flex-direction:column; height:calc(100dvh - 172px); min-height:420px; }
+.coach-body { flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:6px; }
+.coach-input-row { padding-top:14px; margin-top:8px; border-top:1px solid rgba(255,255,255,.07); }
+@media (max-width: 900px) {
+  .coach-card { height:calc(100dvh - 200px); min-height:360px; }
+}
+
 /* ============ QUICK TRADE (FAB + POPUP) ============ */
 .fab { position:fixed; right:22px; bottom:calc(22px + env(safe-area-inset-bottom)); z-index:400; display:flex; align-items:center; gap:8px; padding:13px 18px; border:none; border-radius:999px; cursor:pointer; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; font-weight:700; font-size:14px; box-shadow:0 12px 30px -8px rgba(99,102,241,.7); }
 .fab:hover { filter:brightness(1.08); }

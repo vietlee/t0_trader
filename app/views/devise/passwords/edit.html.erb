@@ -1,0 +1,19 @@
+<% content_for :title, "Đặt lại mật khẩu · T0 Trader" %>
+<h2 style="font-size:18px;font-weight:700;margin-bottom:4px">Đặt lại mật khẩu</h2>
+<p style="font-size:13px;color:#8595b4;margin-bottom:18px">Nhập mật khẩu mới cho tài khoản của bạn.</p>
+
+<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+  <%= f.hidden_field :reset_password_token %>
+  <div class="mb-4">
+    <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu mới", autocomplete: "new-password", autofocus: true, placeholder: "Tối thiểu #{@minimum_password_length} ký tự" %>
+  </div>
+  <div class="mb-5">
+    <%= render "shared/password_field", f: f, method: :password_confirmation, label: "Nhập lại mật khẩu mới", autocomplete: "new-password" %>
+  </div>
+  <%= f.submit "Đổi mật khẩu", class: "btn btn-primary", style: "width:100%; justify-content:center" %>
+<% end %>
+
+<div style="text-align:center; margin-top:16px; font-size:13.5px; color:#8595b4">
+  <%= link_to "← Quay lại đăng nhập", new_session_path(resource_name), style: "color:#6ee7b7; font-weight:600" %>
+</div>

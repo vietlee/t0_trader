@@ -1,27 +1,31 @@
-<% content_for :title, "Tài khoản · T0 Trader" %>
-<h2 style="font-size:18px;font-weight:700;margin-bottom:4px">Tài khoản</h2>
-<p style="font-size:13px;color:#8595b4;margin-bottom:18px">Đổi email hoặc mật khẩu.</p>
+<% content_for :title, "Hồ sơ · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Hồ sơ tài khoản</div>
+    <div class="page-sub">Cập nhật email và mật khẩu đăng nhập.</div>
+  </div>
+</div>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-  <div class="mb-4">
-    <%= f.label :email, "Email", class: "form-label" %>
-    <%= f.email_field :email, autocomplete: "email", class: "form-input" %>
-  </div>
-  <div class="mb-4">
-    <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu mới", autocomplete: "new-password", placeholder: "Để trống nếu không đổi" %>
-    <div class="form-hint">Tối thiểu <%= @minimum_password_length %> ký tự.</div>
-  </div>
-  <div class="mb-4">
-    <%= render "shared/password_field", f: f, method: :password_confirmation, label: "Nhập lại mật khẩu mới", autocomplete: "new-password" %>
-  </div>
-  <div class="mb-5">
-    <%= render "shared/password_field", f: f, method: :current_password, label: "Mật khẩu hiện tại", autocomplete: "current-password", placeholder: "Xác nhận để lưu thay đổi" %>
-    <div class="form-hint">Cần mật khẩu hiện tại để xác nhận thay đổi.</div>
-  </div>
-  <%= f.submit "Lưu thay đổi", class: "btn btn-primary", style: "width:100%; justify-content:center" %>
-<% end %>
-
-<div style="text-align:center; margin-top:16px">
-  <%= link_to "← Về trang chủ", root_path, style: "color:#8595b4; font-size:13.5px" %>
+<div class="card" style="max-width:520px">
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+    <div class="mb-4">
+      <%= f.label :email, "Email", class: "form-label" %>
+      <%= f.email_field :email, autocomplete: "email", class: "form-input" %>
+    </div>
+    <div class="divider"></div>
+    <div class="card-title mb-3">Đổi mật khẩu</div>
+    <div class="mb-4">
+      <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu mới", autocomplete: "new-password", placeholder: "Để trống nếu không đổi" %>
+      <div class="form-hint">Tối thiểu <%= @minimum_password_length %> ký tự.</div>
+    </div>
+    <div class="mb-4">
+      <%= render "shared/password_field", f: f, method: :password_confirmation, label: "Nhập lại mật khẩu mới", autocomplete: "new-password" %>
+    </div>
+    <div class="mb-5">
+      <%= render "shared/password_field", f: f, method: :current_password, label: "Mật khẩu hiện tại", autocomplete: "current-password", placeholder: "Xác nhận để lưu thay đổi" %>
+      <div class="form-hint">Cần mật khẩu hiện tại để xác nhận thay đổi.</div>
+    </div>
+    <%= f.submit "Lưu thay đổi", class: "btn btn-primary" %>
+  <% end %>
 </div>

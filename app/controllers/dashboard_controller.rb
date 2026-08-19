@@ -18,21 +18,19 @@ class DashboardController < ApplicationController
     @stats = @p.stats
     @positions = @p.positions
     @t0_rows = @p.t0_rows
-    @recent_trades = current_account.trades.includes(:stock).recent.limit(8)
     @equity_curve = @p.equity_curve
-    @period_series = period_series(@p)
-    @latest_insight = current_user.ai_insights.status_done.recent.first
-  end
 
-  private
-
-  # Chuỗi P&L realized theo đơn vị hợp với khoảng đang xem.
-  def period_series(p)
-    granularity = case @period
-    when "day", "week" then :day
-    when "year", "all" then :month
-    else :day
-    end
-    p.realized_series(granularity)
+    # Dữ liệu biểu đồ tổng quan
+    @allocation = @positions.select { |p| p.market_value.to_i.positive? }
+                            .map { |p| [p.stock.symbol, p.market_value.to_i] }
+    @asset_mix = [["Tiền mặt", @p.cash.to_i], ["Cổ phiếu", @p.market_value.to_i]]
+                 .select { |_, v| v.positive? }
+    @unrealized_by_stock = @positions.select { |p| p.market_price }
+                                     .map { |p| [p.stock.symbol, p.unrealized.to_i] }
+                                     .sort_by { |_, v| -v }
+    @realized_by_stock = @p.realized_events.group_by { |e| e.stock&.symbol }
+                           .transform_values { |evs| evs.sum(&:pnl).to_i }
+                           .reject { |k, _| k.nil? }
+                           .sort_by { |_, v| -v }.to_h
   end
 end

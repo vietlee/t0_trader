@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   # :registerable cho phép tự đăng ký + đổi email/mật khẩu (không xác thực email).
-  devise :database_authenticatable, :registerable, :rememberable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
   has_many :accounts, dependent: :destroy
   has_many :ai_insights, dependent: :destroy
