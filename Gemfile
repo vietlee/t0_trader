@@ -71,7 +71,7 @@ group :development do
   gem "capistrano",          "~> 3.18", require: false
   gem "capistrano-rails",    "~> 1.6",  require: false
   gem "capistrano-rbenv",    "~> 2.2",  require: false
-  gem "capistrano3-puma",    "~> 6.0",  require: false
+  gem "capistrano3-puma",    "~> 8.1",  require: false
   gem "capistrano-sidekiq",  "~> 2.3",  require: false
   # net-ssh cần 2 gem này để dùng SSH key ED25519
   gem "ed25519",             "~> 1.3",  require: false
