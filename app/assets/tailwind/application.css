@@ -173,6 +173,20 @@
 .confirm-msg { font-size:14px; color:#c7d3e8; line-height:1.6; margin-bottom:20px; }
 .confirm-actions { display:flex; gap:10px; justify-content:flex-end; }
 
+/* ============ ANALYSIS CARDS ============ */
+.analysis-card {
+  display:flex; align-items:center; gap:14px; width:100%; text-align:left; cursor:pointer;
+  padding:16px 18px; border-radius:14px;
+  background:linear-gradient(180deg, rgba(99,102,241,.1), rgba(15,20,32,.9));
+  border:1px solid rgba(99,102,241,.22); color:inherit; transition:all .15s;
+}
+.analysis-card:hover { border-color:rgba(99,102,241,.5); transform:translateY(-1px); }
+.analysis-card:disabled { opacity:.55; cursor:not-allowed; }
+.analysis-run { font-size:12.5px; font-weight:700; color:#c4b5fd; white-space:nowrap; }
+form.button_to { margin:0; display:block; }
+.spinner { width:26px; height:26px; border-radius:50%; border:3px solid rgba(99,102,241,.25); border-top-color:#8b5cf6; animation:spin .8s linear infinite; flex-shrink:0; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
 /* ============ AI COACH FULL HEIGHT ============ */
 .coach-card { display:flex; flex-direction:column; height:calc(100dvh - 172px); min-height:420px; }
 .coach-body { flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:6px; }
@@ -208,12 +222,21 @@
   .app-shell.nav-open .nav-backdrop { display:block; opacity:1; pointer-events:auto; }
   .main-area {
     width:100%; max-width:100%;
-    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-top: calc(env(safe-area-inset-top) + 62px);
     padding-right: calc(16px + env(safe-area-inset-right));
-    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
     padding-left: calc(16px + env(safe-area-inset-left));
   }
-  .mobile-topbar { display:flex; align-items:center; gap:12px; margin-bottom:16px; position:relative; z-index:10; }
+  /* Header cố định: logo + menu không cuộn theo */
+  .mobile-topbar {
+    position:fixed; top:0; left:0; right:0; z-index:200; margin:0;
+    display:flex; align-items:center; gap:12px;
+    padding:calc(env(safe-area-inset-top) + 9px) 16px 9px;
+    background:rgba(7,10,18,.94); backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  /* Ô nhập >= 16px để iOS KHÔNG auto-zoom khi focus */
+  input, select, textarea, .form-input, .form-select { font-size:16px; }
   /* Ép mọi grid inline về 1 cột trên mobile */
   .main-area [style*="grid-template-columns"] { grid-template-columns:1fr !important; }
   /* Bảng luôn cuộn ngang trong khung, không phá layout */
@@ -228,7 +251,18 @@
   .segmented { flex-wrap:wrap; }
   .segmented a { padding:6px 10px; font-size:12px; }
   .card { padding:15px 16px; }
+  /* Coach lấp đầy màn hình, input ghim đáy */
+  .main-area.coach-fill { height:100dvh; overflow:hidden; display:flex; flex-direction:column; padding-bottom:calc(env(safe-area-inset-bottom) + 10px); }
+  .coach-fill .coach-card { flex:1 1 auto; height:auto; min-height:0; margin:0; }
 }
 @media (min-width: 901px) {
   .mobile-topbar { display:none !important; }
+  .main-area.coach-fill { height:100dvh; overflow:hidden; display:flex; flex-direction:column; }
+  .coach-fill .coach-card { flex:1; height:auto; min-height:0; }
+}
+
+/* Ẩn thanh cuộn trên PWA / mobile */
+@media (max-width: 900px), (display-mode: standalone) {
+  ::-webkit-scrollbar { width:0 !important; height:0 !important; display:none; }
+  html, body { scrollbar-width:none; -ms-overflow-style:none; }
 }

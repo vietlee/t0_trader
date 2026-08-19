@@ -27,7 +27,7 @@
     <div class="app-shell" data-controller="mobile-nav">
       <%= render "layouts/sidebar" %>
       <div class="nav-backdrop" data-action="click->mobile-nav#close"></div>
-      <main class="main-area">
+      <main class="main-area <%= 'coach-fill' if controller_name == 'coach' %>">
         <div class="mobile-topbar">
           <button type="button" class="hamburger" data-action="mobile-nav#toggle" aria-label="Menu">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>

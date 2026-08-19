@@ -1,57 +1,70 @@
 <% content_for :title, "Phân tích AI · T0 Trader" %>
-<% if @insights.any? { |i| i.status_queued? || i.status_processing? } %>
-  <% content_for :head do %><meta http-equiv="refresh" content="6"><% end %>
-<% end %>
+<% processing = @insights.any? { |i| i.status_queued? || i.status_processing? } %>
+<% if processing %><% content_for :head do %><meta http-equiv="refresh" content="5"><% end %><% end %>
 
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <div class="page-title">Phân tích AI</div>
-    <div class="page-sub">AI đọc dữ liệu giao dịch của bạn và chỉ ra thói quen lời/lỗ, kỷ luật, quản trị vốn.</div>
-  </div>
+<div class="mb-5">
+  <div class="page-title">Phân tích AI</div>
+  <div class="page-sub">Chọn một loại phân tích — AI đọc toàn bộ giao dịch của bạn và đưa ra nhận định trong vài giây.</div>
 </div>
 
 <% unless @configured %>
   <div class="flash flash-alert mb-5">Chưa cấu hình <code>ANTHROPIC_API_KEY</code>. Thêm biến môi trường này để bật phân tích AI.</div>
 <% end %>
 
-<div class="card mb-5">
-  <div class="card-title mb-3">Chạy phân tích mới</div>
-  <div class="flex gap-3 flex-wrap">
-    <% @kinds.each do |kind, label| %>
-      <%= button_to label, ai_insights_path(kind: kind), class: "btn #{kind == 'journal' ? 'btn-primary' : 'btn-ghost'}",
-            disabled: !@configured %>
+<% descriptions = {
+     "journal" => { icon: "📓", desc: "Tổng thể nhật ký giao dịch: thói quen lời/lỗ, kỷ luật, và 3 việc cần cải thiện." },
+     "weekly"  => { icon: "🗓️", desc: "Tổng kết hiệu suất giai đoạn: kết quả chính, làm tốt gì, cần sửa gì." },
+     "pattern" => { icon: "🔍", desc: "Tìm pattern lặp lại trong các lệnh thắng/thua (theo mã, nhãn, thời gian giữ)." },
+     "risk"    => { icon: "🛡️", desc: "Quản trị vốn & rủi ro: kích thước vị thế, phân bổ, phí bào mòn lợi nhuận." }
+   } %>
+
+<div class="grid gap-4 mb-6" style="grid-template-columns: 1fr 1fr;">
+  <% @kinds.each do |kind, label| %>
+    <% d = descriptions[kind] %>
+    <%= button_to ai_insights_path(kind: kind), class: "analysis-card", disabled: (!@configured || processing) do %>
+      <div style="font-size:24px"><%= d[:icon] %></div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:#f3f7fc"><%= label %></div>
+        <div style="font-size:12.5px;color:#8595b4;line-height:1.5;margin-top:3px"><%= d[:desc] %></div>
+      </div>
+      <div class="analysis-run"><%= processing ? "…" : "Chạy →" %></div>
     <% end %>
-  </div>
+  <% end %>
 </div>
 
-<% if @insights.any? %>
+<% if processing %>
+  <div class="card mb-5" style="border-color:rgba(99,102,241,.3)">
+    <div class="flex items-center gap-3">
+      <div class="spinner"></div>
+      <div>
+        <div style="font-weight:700;color:#c4b5fd">AI đang phân tích danh mục của bạn…</div>
+        <div style="font-size:12.5px;color:#8595b4">Thường mất 5–15 giây. Trang sẽ tự cập nhật kết quả.</div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% done = @insights.reject { |i| i.status_queued? || i.status_processing? } %>
+<% if done.any? %>
+  <div class="card-title mb-3" style="color:#aab6d0">Kết quả gần đây</div>
   <div style="display:flex;flex-direction:column;gap:14px">
-    <% @insights.each do |insight| %>
+    <% done.each_with_index do |insight, idx| %>
       <div class="card">
         <div class="card-header">
           <div class="flex items-center gap-3">
             <span class="chip" style="color:#c4b5fd;background:rgba(99,102,241,.14)">✦ <%= insight.label %></span>
             <span style="font-size:12px;color:#7182a3"><%= insight.created_at.strftime("%d/%m/%Y %H:%M") %></span>
           </div>
-          <% case insight.status %>
-          <% when "queued", "processing" %>
-            <span class="badge badge-pending">Đang phân tích…</span>
-          <% when "failed" %>
-            <span class="badge badge-cancelled">Lỗi</span>
-          <% else %>
-            <span class="badge badge-settled">Xong<%= " · #{insight.ai_model}" if insight.ai_model %></span>
-          <% end %>
+          <% if insight.status_failed? %><span class="badge badge-cancelled">Lỗi</span><% end %>
         </div>
         <% if insight.status_done? %>
           <div class="md"><%= simple_markdown(insight.content) %></div>
-        <% elsif insight.status_failed? %>
-          <div style="color:#fda4b4;font-size:13.5px"><%= insight.content %></div>
         <% else %>
-          <div style="color:#8595b4;font-size:13.5px">AI đang đọc dữ liệu và soạn phân tích… trang sẽ tự làm mới.</div>
+          <div style="color:#fda4b4;font-size:13.5px"><%= insight.content %></div>
         <% end %>
       </div>
     <% end %>
   </div>
-<% else %>
-  <div class="card"><div class="empty-state">Chưa có phân tích nào. Bấm một nút phía trên để bắt đầu.</div></div>
+<% elsif !processing %>
+  <div class="card"><div class="empty-state">Chưa có phân tích nào. Chọn một loại phân tích phía trên để bắt đầu.</div></div>
 <% end %>
