@@ -24,7 +24,7 @@ module Anthropic
 
     # messages: [{ role: "user"/"assistant", content: "..." }]
     # Trả về chuỗi text trả lời.
-    def self.chat(system:, messages:, model: self.model, max_tokens: 1500, temperature: 0.4)
+    def self.chat(system:, messages:, model: self.model, max_tokens: 1500)
       raise Error, "Chưa cấu hình ANTHROPIC_API_KEY" unless configured?
 
       uri = URI(API_URL)
@@ -40,7 +40,6 @@ module Anthropic
       req.body = {
         model: model,
         max_tokens: max_tokens,
-        temperature: temperature,
         system: system,
         messages: messages
       }.to_json
