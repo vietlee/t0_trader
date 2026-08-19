@@ -1,0 +1,33 @@
+<div data-controller="quick-trade">
+  <!-- Nút nổi -->
+  <button type="button" class="fab" data-action="quick-trade#open" aria-label="Ghi nhanh giao dịch">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    <span class="fab-label">Ghi nhanh</span>
+  </button>
+
+  <!-- Popup -->
+  <div class="qt-overlay" data-quick-trade-target="modal" data-action="click->quick-trade#backdrop">
+    <div class="qt-box">
+      <div class="flex items-center justify-between" style="margin-bottom:6px">
+        <div style="font-size:16px;font-weight:700;color:#f3f7fc">✦ Ghi nhanh bằng lời</div>
+        <button type="button" class="qt-x" data-action="quick-trade#close" aria-label="Đóng">✕</button>
+      </div>
+      <div style="font-size:13px;color:#8595b4;margin-bottom:12px">Gõ hoặc bấm mic để đọc, ví dụ: <i>"đã mua 1000 BSR giá 23k"</i> · <i>"bán 2000 HPG giá 27.5"</i>. AI sẽ tự tạo giao dịch.</div>
+
+      <%= form_with url: quick_trades_path, method: :post, data: { turbo: false } do %>
+        <div style="position:relative">
+          <%= text_area_tag :text, nil, rows: 3, class: "form-input", style: "resize:none;padding-right:52px",
+                placeholder: "Mô tả giao dịch…", data: { quick_trade_target: "text" } %>
+          <button type="button" class="qt-mic" data-quick-trade-target="mic" data-action="quick-trade#toggleMic" aria-label="Nói">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+          </button>
+        </div>
+        <div class="qt-status" data-quick-trade-target="status"></div>
+        <div class="flex gap-2" style="margin-top:14px;justify-content:flex-end">
+          <button type="button" class="btn btn-ghost" data-action="quick-trade#close">Huỷ</button>
+          <%= submit_tag "Tạo giao dịch", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="T0 Trader">
     <meta name="theme-color" content="#0b0f1a">
     <%= csrf_meta_tags %>
@@ -39,6 +39,7 @@
         <% if alert %><div class="flash flash-alert"><%= alert %></div><% end %>
         <%= yield %>
       </main>
+      <%= render "layouts/quick_trade" %>
     </div>
   </body>
 </html>
