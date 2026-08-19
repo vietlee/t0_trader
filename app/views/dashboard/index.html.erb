@@ -1,0 +1,183 @@
+<% content_for :title, "Tổng quan · T0 Trader" %>
+
+<div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
+  <div>
+    <div class="page-title">Tổng quan danh mục</div>
+    <div class="page-sub"><%= current_account.name %> · <%= current_account.broker %> · cập nhật <%= l(Time.current, format: :short) rescue Time.current.strftime("%d/%m %H:%M") %></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="segmented">
+      <% { "day" => "Ngày", "week" => "Tuần", "month" => "Tháng", "year" => "Năm", "all" => "Tất cả" }.each do |k, label| %>
+        <%= link_to label, root_path(period: k), class: (@period == k ? "active" : "") %>
+      <% end %>
+    </div>
+    <%= link_to new_trade_path, class: "btn btn-primary" do %>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      Ghi giao dịch
+    <% end %>
+  </div>
+</div>
+
+<!-- KPI -->
+<div class="kpi-grid mb-5">
+  <div class="card kpi">
+    <div class="kpi-accent" style="background:#6366f1"></div>
+    <div class="kpi-label">Tổng tài sản (NAV)</div>
+    <div class="kpi-value" title="<%= vnd(@kpi[:nav]) %>"><%= vnd_short(@kpi[:nav]) %></div>
+    <div class="kpi-sub">Lời/lỗ toàn phần <%= pnl(@kpi[:net], short: true) %> · <%= pnl_pct(@kpi[:return_pct]) %></div>
+  </div>
+  <div class="card kpi">
+    <div class="kpi-accent" style="background:#38bdf8"></div>
+    <div class="kpi-label">Vốn đã nạp</div>
+    <div class="kpi-value" title="<%= vnd(@kpi[:capital]) %>"><%= vnd_short(@kpi[:capital]) %></div>
+    <div class="kpi-sub">Tiền mặt: <span class="text-slate-200"><%= vnd_short(@kpi[:cash]) %></span></div>
+  </div>
+  <div class="card kpi">
+    <div class="kpi-accent" style="background:#10b981"></div>
+    <div class="kpi-label">Đã hiện thực (Realized)</div>
+    <div class="kpi-value <%= pnl_color(@kpi[:realized]) %>" title="<%= vnd(@kpi[:realized]) %>"><%= @kpi[:realized] >= 0 ? "+" : "" %><%= vnd_short(@kpi[:realized]) %></div>
+    <div class="kpi-sub"><%= { "day"=>"Hôm nay","week"=>"Tuần này","month"=>"Tháng này","year"=>"Năm nay","all"=>"Tổng" }[@period] %>: <%= pnl(@kpi[:period_pnl], short: true) %></div>
+  </div>
+  <div class="card kpi">
+    <div class="kpi-accent" style="background:#f59e0b"></div>
+    <div class="kpi-label">Chưa hiện thực (Unrealized)</div>
+    <div class="kpi-value <%= pnl_color(@kpi[:unrealized]) %>" title="<%= vnd(@kpi[:unrealized]) %>"><%= @kpi[:unrealized] >= 0 ? "+" : "" %><%= vnd_short(@kpi[:unrealized]) %></div>
+    <div class="kpi-sub">Giá trị CP đang giữ: <span class="text-slate-200"><%= vnd_short(@kpi[:market_value]) %></span></div>
+  </div>
+  <div class="card kpi">
+    <div class="kpi-accent" style="background:#a78bfa"></div>
+    <div class="kpi-label">Tỷ lệ thắng</div>
+    <div class="kpi-value"><%= number_with_precision(@stats[:win_rate], precision: 1) %><span style="font-size:16px;color:#8595b4">%</span></div>
+    <div class="kpi-sub"><%= @stats[:win_count] %> thắng / <%= @stats[:loss_count] %> thua · PF <%= @stats[:profit_factor] %></div>
+  </div>
+</div>
+
+<!-- Charts + T+0 -->
+<div class="grid gap-5 mb-5" style="grid-template-columns: 1.6fr 1fr;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Đường vốn — luỹ kế lời/lỗ đã hiện thực</div>
+    </div>
+    <% if @equity_curve.any? %>
+      <%= line_chart @equity_curve, height: "260px", colors: ["#10b981"], curve: true, points: false,
+            library: { scales: { x: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } },
+                                 y: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } } },
+                       plugins: { legend: { display: false } } } %>
+    <% else %>
+      <div class="empty-state">Chưa có giao dịch đã đóng để vẽ đường vốn.</div>
+    <% end %>
+  </div>
+
+  <div class="card" style="border-color: rgba(16,185,129,.22);">
+    <div class="card-header">
+      <div class="card-title" style="color:#6ee7b7">⚡ Bảng T+0 — bán được hôm nay</div>
+      <%= link_to "Chi tiết →", positions_path, class: "chip", style:"color:#6ee7b7" %>
+    </div>
+    <div class="flex gap-4 mb-3">
+      <div>
+        <div style="font-size:11px;color:#8595b4">SẴN SÀNG BÁN</div>
+        <div style="font-size:22px;font-weight:750;color:#6ee7b7"><%= number_with_delimiter(@p.total_available_qty, delimiter: ".") %></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#8595b4">ĐANG VỀ (T+)</div>
+        <div style="font-size:22px;font-weight:750;color:#fcd34d"><%= number_with_delimiter(@p.total_pending_qty, delimiter: ".") %></div>
+      </div>
+    </div>
+    <% if @t0_rows.any? %>
+      <div style="display:flex;flex-direction:column;gap:9px;max-height:220px;overflow:auto">
+        <% @t0_rows.first(6).each do |r| %>
+          <div>
+            <div class="flex items-center justify-between" style="font-size:13px">
+              <span class="sym"><%= r[:stock].symbol %></span>
+              <span style="color:#8595b4"><span style="color:#6ee7b7"><%= r[:available] %></span> / <%= r[:total] %></span>
+            </div>
+            <div class="bar-track mt-1">
+              <div class="bar-fill" style="width: <%= r[:total].zero? ? 0 : (r[:available] * 100.0 / r[:total]).round %>%; background:#10b981"></div>
+            </div>
+            <% if r[:pending].positive? %>
+              <div style="font-size:11px;color:#fcd34d;margin-top:3px">
+                <%= r[:pending] %> đang về<% sched = r[:pending_schedule].select { |s| s[:settlement_date] }.min_by { |s| s[:settlement_date] } %><% if sched %> · về <%= sched[:settlement_date].strftime("%d/%m") %> (còn <%= sched[:sessions] %> phiên)<% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state">Chưa có cổ phiếu đang giữ.</div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Positions + side -->
+<div class="grid gap-5" style="grid-template-columns: 1.6fr 1fr;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Vị thế đang mở</div>
+      <%= link_to "Xem tất cả →", positions_path, class: "chip" %>
+    </div>
+    <% if @positions.any? %>
+      <table class="data-table">
+        <thead><tr><th>Mã</th><th class="num">KL</th><th class="num">Giá vốn</th><th class="num">Giá TT</th><th class="num">Giá trị</th><th class="num">Lãi/lỗ</th></tr></thead>
+        <tbody>
+          <% @positions.first(7).each do |pos| %>
+            <tr>
+              <td class="sym"><%= pos.stock.symbol %><% if pos.pending_qty.positive? %> <span class="badge badge-pending" style="font-size:9px"><%= pos.pending_qty %> về</span><% end %></td>
+              <td class="num"><%= number_with_delimiter(pos.quantity, delimiter: ".") %></td>
+              <td class="num"><%= vnd(pos.avg_cost, unit: "") %></td>
+              <td class="num"><%= pos.market_price ? vnd(pos.market_price, unit: "") : "—" %></td>
+              <td class="num"><%= vnd_short(pos.market_value) %></td>
+              <td class="num"><%= pnl(pos.unrealized, short: true) %><br><span style="font-size:11px"><%= pnl_pct(pos.unrealized_pct) %></span></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="empty-state">Chưa có vị thế. <%= link_to "Ghi giao dịch đầu tiên", new_trade_path, style:"color:#6ee7b7" %></div>
+    <% end %>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <!-- AI insight -->
+    <div class="card" style="background:linear-gradient(180deg, rgba(99,102,241,.12), rgba(15,20,32,.9)); border-color:rgba(99,102,241,.25)">
+      <div class="card-header">
+        <div class="card-title" style="color:#c4b5fd">✦ Nhận định AI</div>
+        <%= link_to "Mở →", ai_insights_path, class: "chip", style:"color:#c4b5fd" %>
+      </div>
+      <% if @latest_insight %>
+        <div style="font-size:12px;color:#8595b4;margin-bottom:6px"><%= @latest_insight.label %> · <%= @latest_insight.created_at.strftime("%d/%m %H:%M") %></div>
+        <div style="font-size:13.5px;color:#d3ddec;line-height:1.55;max-height:180px;overflow:auto">
+          <%= truncate(@latest_insight.content.to_s, length: 420) %>
+        </div>
+      <% else %>
+        <div style="font-size:13.5px;color:#9fb0cc;line-height:1.55">Chưa có phân tích. Để AI review nhật ký trade và chỉ ra thói quen lời/lỗ của bạn.</div>
+        <%= button_to "Chạy phân tích ngay", ai_insights_path(kind: "journal"), class: "btn btn-ghost btn-sm", style:"margin-top:12px" %>
+      <% end %>
+    </div>
+
+    <!-- Recent trades -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Giao dịch gần đây</div>
+        <%= link_to "Tất cả →", trades_path, class: "chip" %>
+      </div>
+      <% if @recent_trades.any? %>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <% @recent_trades.each do |t| %>
+            <%= link_to edit_trade_path(t), class: "flex items-center justify-between", style: "padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.04);text-decoration:none" do %>
+              <span class="flex items-center gap-2">
+                <%= side_badge(t) %>
+                <span class="sym"><%= t.stock.symbol %></span>
+              </span>
+              <span style="text-align:right">
+                <span style="font-size:13px;color:#d3ddec"><%= number_with_delimiter(t.quantity, delimiter:".") %> × <%= vnd(t.price, unit:"") %></span><br>
+                <span style="font-size:11px;color:#7182a3"><%= t.traded_at.strftime("%d/%m") %> · <%= status_badge(t) %></span>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">Chưa có giao dịch.</div>
+      <% end %>
+    </div>
+  </div>
+</div>

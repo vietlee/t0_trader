@@ -1,0 +1,64 @@
+<% content_for :title, "Báo cáo · T0 Trader" %>
+<% chart_lib = { scales: { x: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } }, y: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } } }, plugins: { legend: { display: false } } } %>
+
+<div class="mb-6">
+  <div class="page-title">Báo cáo hiệu suất</div>
+  <div class="page-sub">Lời/lỗ theo thời gian, theo mã và theo chiến lược.</div>
+</div>
+
+<div class="kpi-grid mb-5">
+  <div class="card kpi"><div class="kpi-label">Lời/lỗ đã hiện thực</div><div class="kpi-value <%= pnl_color(@realized_total) %>"><%= @realized_total >= 0 ? "+" : "" %><%= vnd_short(@realized_total) %></div></div>
+  <div class="card kpi"><div class="kpi-label">Chưa hiện thực</div><div class="kpi-value <%= pnl_color(@unrealized_total) %>"><%= @unrealized_total >= 0 ? "+" : "" %><%= vnd_short(@unrealized_total) %></div></div>
+  <div class="card kpi"><div class="kpi-label">Tổng phí + thuế</div><div class="kpi-value text-rose-400"><%= vnd_short(@fees_total) %></div></div>
+  <div class="card kpi"><div class="kpi-label">Profit factor</div><div class="kpi-value"><%= @stats[:profit_factor] %></div><div class="kpi-sub">TB thắng <%= vnd_short(@stats[:avg_win]) %> · TB thua <%= vnd_short(@stats[:avg_loss]) %></div></div>
+</div>
+
+<div class="grid gap-5 mb-5" style="grid-template-columns: 1.5fr 1fr">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Lời/lỗ đã hiện thực theo tháng</div></div>
+    <% if @monthly.any? %>
+      <%= column_chart @monthly, height: "280px", colors: ["#10b981"], library: chart_lib %>
+    <% else %>
+      <div class="empty-state">Chưa có dữ liệu.</div>
+    <% end %>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Phân bổ lời/lỗ theo mã</div></div>
+    <% if @by_stock.any? %>
+      <%= pie_chart @by_stock.map { |r| [r[:stock].symbol, r[:pnl].to_i] }, height: "280px",
+            colors: ["#10b981", "#38bdf8", "#a78bfa", "#f59e0b", "#f43f5e", "#22d3ee", "#84cc16"], library: { plugins: { legend: { labels: { color: "#aab6d0" } } } } %>
+    <% else %>
+      <div class="empty-state">Chưa có dữ liệu.</div>
+    <% end %>
+  </div>
+</div>
+
+<div class="grid gap-5" style="grid-template-columns: 1fr 1fr">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Theo mã cổ phiếu</div></div>
+    <% if @by_stock.any? %>
+      <table class="data-table">
+        <thead><tr><th>Mã</th><th class="num">Số lệnh</th><th class="num">Lời/lỗ</th></tr></thead>
+        <tbody>
+          <% @by_stock.each do |r| %>
+            <tr><td class="sym"><%= r[:stock].symbol %></td><td class="num"><%= r[:trades] %></td><td class="num"><%= pnl(r[:pnl], short: true) %></td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %><div class="empty-state">Chưa có lệnh đã đóng.</div><% end %>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Theo chiến lược</div></div>
+    <% if @by_tag.any? %>
+      <table class="data-table">
+        <thead><tr><th>Nhãn</th><th class="num">Số lệnh</th><th class="num">Lời/lỗ</th></tr></thead>
+        <tbody>
+          <% @by_tag.each do |r| %>
+            <tr><td><span class="chip"><%= r[:tag] %></span></td><td class="num"><%= r[:trades] %></td><td class="num"><%= pnl(r[:pnl], short: true) %></td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %><div class="empty-state">Chưa có dữ liệu.</div><% end %>
+  </div>
+</div>

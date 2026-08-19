@@ -1,0 +1,9 @@
+<% content_for :title, "#{@insight.label} · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div class="page-title">✦ <%= @insight.label %></div>
+  <%= link_to "← Danh sách", ai_insights_path, class: "btn btn-ghost" %>
+</div>
+<div class="card">
+  <div style="font-size:12px;color:#7182a3;margin-bottom:10px"><%= @insight.created_at.strftime("%d/%m/%Y %H:%M") %><%= " · #{@insight.ai_model}" if @insight.ai_model %></div>
+  <div class="md"><%= simple_markdown(@insight.content) %></div>
+</div>

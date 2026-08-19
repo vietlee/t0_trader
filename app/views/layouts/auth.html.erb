@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <title><%= content_for(:title) || "T0 Trader" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <div style="min-height:100vh; display:grid; place-items:center; padding:24px;">
+      <div style="width:100%; max-width:400px;">
+        <div class="brand" style="justify-content:center; padding-bottom:24px;">
+          <div class="brand-mark">T0</div>
+          <div>
+            <div class="brand-name">T0 Trader</div>
+            <div class="brand-sub">Quản trị giao dịch cổ phiếu</div>
+          </div>
+        </div>
+        <div class="card">
+          <% if notice %><div class="flash flash-notice"><%= notice %></div><% end %>
+          <% if alert %><div class="flash flash-alert"><%= alert %></div><% end %>
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

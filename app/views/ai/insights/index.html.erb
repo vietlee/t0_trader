@@ -1,0 +1,57 @@
+<% content_for :title, "Phân tích AI · T0 Trader" %>
+<% if @insights.any? { |i| i.status_queued? || i.status_processing? } %>
+  <% content_for :head do %><meta http-equiv="refresh" content="6"><% end %>
+<% end %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Phân tích AI</div>
+    <div class="page-sub">AI đọc dữ liệu giao dịch của bạn và chỉ ra thói quen lời/lỗ, kỷ luật, quản trị vốn.</div>
+  </div>
+</div>
+
+<% unless @configured %>
+  <div class="flash flash-alert mb-5">Chưa cấu hình <code>ANTHROPIC_API_KEY</code>. Thêm biến môi trường này để bật phân tích AI.</div>
+<% end %>
+
+<div class="card mb-5">
+  <div class="card-title mb-3">Chạy phân tích mới</div>
+  <div class="flex gap-3 flex-wrap">
+    <% @kinds.each do |kind, label| %>
+      <%= button_to label, ai_insights_path(kind: kind), class: "btn #{kind == 'journal' ? 'btn-primary' : 'btn-ghost'}",
+            disabled: !@configured %>
+    <% end %>
+  </div>
+</div>
+
+<% if @insights.any? %>
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <% @insights.each do |insight| %>
+      <div class="card">
+        <div class="card-header">
+          <div class="flex items-center gap-3">
+            <span class="chip" style="color:#c4b5fd;background:rgba(99,102,241,.14)">✦ <%= insight.label %></span>
+            <span style="font-size:12px;color:#7182a3"><%= insight.created_at.strftime("%d/%m/%Y %H:%M") %></span>
+          </div>
+          <% case insight.status %>
+          <% when "queued", "processing" %>
+            <span class="badge badge-pending">Đang phân tích…</span>
+          <% when "failed" %>
+            <span class="badge badge-cancelled">Lỗi</span>
+          <% else %>
+            <span class="badge badge-settled">Xong<%= " · #{insight.ai_model}" if insight.ai_model %></span>
+          <% end %>
+        </div>
+        <% if insight.status_done? %>
+          <div class="md"><%= simple_markdown(insight.content) %></div>
+        <% elsif insight.status_failed? %>
+          <div style="color:#fda4b4;font-size:13.5px"><%= insight.content %></div>
+        <% else %>
+          <div style="color:#8595b4;font-size:13.5px">AI đang đọc dữ liệu và soạn phân tích… trang sẽ tự làm mới.</div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card"><div class="empty-state">Chưa có phân tích nào. Bấm một nút phía trên để bắt đầu.</div></div>
+<% end %>

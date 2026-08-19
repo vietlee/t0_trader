@@ -1,0 +1,42 @@
+<% content_for :title, "Mã & Giá · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Mã cổ phiếu & Giá thị trường</div>
+    <div class="page-sub">Cập nhật giá hiện tại để tính lời/lỗ chưa hiện thực và NAV.</div>
+  </div>
+  <%= link_to "+ Thêm mã", new_stock_path, class: "btn btn-primary" %>
+</div>
+
+<div class="card">
+  <% if @stocks.any? %>
+    <table class="data-table">
+      <thead>
+        <tr><th>Mã</th><th>Tên</th><th>Sàn</th><th>Ngành</th><th class="num">Đang giữ</th><th class="num">Giá hiện tại</th><th>Cập nhật</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @stocks.each do |s| %>
+          <% pos = @positions_by_stock[s.id] %>
+          <tr>
+            <td class="sym"><%= s.symbol %></td>
+            <td style="color:#c7d3e8"><%= s.name %></td>
+            <td><span class="chip"><%= s.exchange %></span></td>
+            <td style="color:#8595b4"><%= s.sector %></td>
+            <td class="num"><%= pos ? number_with_delimiter(pos.quantity, delimiter: ".") : "—" %></td>
+            <td class="num" style="width:190px">
+              <%= form_with url: price_stock_path(s), method: :patch, class: "flex gap-2 items-center", style:"justify-content:flex-end" do %>
+                <%= number_field_tag :current_price, s.current_price&.to_i, step: "any", class: "form-input", style: "padding:6px 8px;width:120px;text-align:right" %>
+                <%= submit_tag "Lưu", class: "btn btn-ghost btn-sm" %>
+              <% end %>
+            </td>
+            <td style="font-size:12px;color:#7182a3"><%= s.price_updated_at ? time_ago_in_words(s.price_updated_at) + " trước" : "—" %></td>
+            <td class="flex gap-1">
+              <%= link_to "Sửa", edit_stock_path(s), class: "btn btn-ghost btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="empty-state">Chưa có mã nào. <%= link_to "Thêm mã đầu tiên", new_stock_path, style:"color:#6ee7b7" %></div>
+  <% end %>
+</div>

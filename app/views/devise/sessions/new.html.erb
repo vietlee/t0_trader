@@ -1,0 +1,20 @@
+<% content_for :title, "Đăng nhập · T0 Trader" %>
+<h2 style="font-size:18px;font-weight:700;margin-bottom:4px">Đăng nhập</h2>
+<p style="font-size:13px;color:#8595b4;margin-bottom:18px">Truy cập bảng điều khiển giao dịch của bạn.</p>
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <div class="mb-4">
+    <%= f.label :email, "Email", class: "form-label" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input", placeholder: "you@example.com" %>
+  </div>
+  <div class="mb-4">
+    <%= f.label :password, "Mật khẩu", class: "form-label" %>
+    <%= f.password_field :password, autocomplete: "current-password", class: "form-input", placeholder: "••••••••" %>
+  </div>
+  <% if devise_mapping.rememberable? %>
+    <label class="flex items-center gap-2 mb-5" style="cursor:pointer;font-size:13.5px;color:#c7d3e8">
+      <%= f.check_box :remember_me %> Ghi nhớ đăng nhập
+    </label>
+  <% end %>
+  <%= f.submit "Đăng nhập", class: "btn btn-primary", style: "width:100%; justify-content:center" %>
+<% end %>

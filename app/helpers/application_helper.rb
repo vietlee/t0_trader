@@ -1,0 +1,83 @@
+module ApplicationHelper
+  # Định dạng tiền VND: 1.234.567 ₫
+  def vnd(amount, unit: "₫")
+    return "—" if amount.nil?
+
+    n = number_with_delimiter(amount.to_d.round(0).to_i, delimiter: ".")
+    unit.present? ? "#{n} #{unit}".html_safe : n
+  end
+
+  # Rút gọn: 1,2 tỷ / 345 tr / 12 ng
+  def vnd_short(amount)
+    return "—" if amount.nil?
+
+    v = amount.to_d
+    abs = v.abs
+    sign = v.negative? ? "-" : ""
+    if abs >= 1_000_000_000
+      "#{sign}#{number_with_precision(abs / 1_000_000_000.0, precision: 2, strip_insignificant_zeros: true)} tỷ"
+    elsif abs >= 1_000_000
+      "#{sign}#{number_with_precision(abs / 1_000_000.0, precision: 1, strip_insignificant_zeros: true)} tr"
+    elsif abs >= 1_000
+      "#{sign}#{number_with_precision(abs / 1_000.0, precision: 0)} ng"
+    else
+      "#{sign}#{number_with_delimiter(abs.round(0).to_i, delimiter: ".")}"
+    end
+  end
+
+  # Màu theo dấu (lời xanh / lỗ đỏ / hoà xám)
+  def pnl_color(value)
+    v = value.to_d
+    return "text-emerald-400" if v.positive?
+    return "text-rose-400" if v.negative?
+
+    "text-slate-400"
+  end
+
+  # P&L có dấu + màu
+  def pnl(value, short: false)
+    v = value.to_d
+    sign = v.positive? ? "+" : ""
+    text = short ? "#{sign}#{vnd_short(v)}" : "#{sign}#{vnd(v)}"
+    content_tag(:span, text, class: pnl_color(v))
+  end
+
+  def pct(value, decimals: 2)
+    return "—" if value.nil?
+
+    v = value.to_d
+    sign = v.positive? ? "+" : ""
+    "#{sign}#{number_with_precision(v, precision: decimals, strip_insignificant_zeros: true)}%"
+  end
+
+  def pnl_pct(value)
+    content_tag(:span, pct(value), class: pnl_color(value))
+  end
+
+  def side_badge(trade)
+    if trade.side_buy?
+      content_tag(:span, "MUA", class: "badge badge-buy")
+    else
+      content_tag(:span, "BÁN", class: "badge badge-sell")
+    end
+  end
+
+  STATUS_LABELS = {
+    "draft" => "Nháp", "pending" => "Đang về", "settled" => "Đã về",
+    "closed" => "Đã đóng", "cancelled" => "Huỷ"
+  }.freeze
+
+  def status_badge(trade)
+    content_tag(:span, STATUS_LABELS[trade.status] || trade.status,
+                class: "badge badge-status badge-#{trade.status}")
+  end
+
+  def nav_link(name, path, icon)
+    active = current_page?(path) || (path != root_path && request.path.start_with?(path))
+    classes = ["nav-link"]
+    classes << "nav-link-active" if active
+    link_to path, class: classes.join(" ") do
+      raw(%(<span class="nav-icon">#{icon}</span><span>#{name}</span>))
+    end
+  end
+end

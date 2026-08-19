@@ -1,0 +1,88 @@
+<% content_for :title, "Cài đặt · T0 Trader" %>
+<div class="mb-6">
+  <div class="page-title">Cài đặt</div>
+  <div class="page-sub">Biểu phí, cấu hình AI và lịch nghỉ giao dịch (ảnh hưởng tới tính T+2).</div>
+</div>
+
+<div class="grid gap-5" style="grid-template-columns: 1fr 1fr; align-items:start">
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <!-- Fees -->
+    <div class="card">
+      <div class="card-title mb-3">Biểu phí giao dịch</div>
+      <%= form_with url: settings_path, method: :patch do %>
+        <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr">
+          <div>
+            <label class="form-label">Phí mua (%)</label>
+            <%= number_field_tag :buy_fee_pct, (Setting["buy_fee_rate"].to_f * 100).round(4), step: "any", class: "form-input" %>
+          </div>
+          <div>
+            <label class="form-label">Phí bán (%)</label>
+            <%= number_field_tag :sell_fee_pct, (Setting["sell_fee_rate"].to_f * 100).round(4), step: "any", class: "form-input" %>
+          </div>
+          <div>
+            <label class="form-label">Thuế bán (%)</label>
+            <%= number_field_tag :sell_tax_pct, (Setting["sell_tax_rate"].to_f * 100).round(4), step: "any", class: "form-input" %>
+          </div>
+        </div>
+
+        <div class="card-title mb-3 mt-5">Trợ lý AI</div>
+        <div class="form-row" style="grid-template-columns: 1fr">
+          <div>
+            <label class="form-label">Model</label>
+            <%= select_tag :ai_model, options_for_select([
+                  ["Claude Sonnet 5 (khuyên dùng)", "claude-sonnet-5"],
+                  ["Claude Opus 5 (mạnh nhất)", "claude-opus-5"],
+                  ["Claude Haiku 4.5 (nhanh, rẻ)", "claude-haiku-4-5-20251001"]
+                ], Setting["ai_model"]), class: "form-select" %>
+          </div>
+          <label class="flex items-center gap-2" style="cursor:pointer">
+            <%= check_box_tag :ai_enabled, "1", Setting["ai_enabled"] %>
+            <span style="font-size:14px;color:#c7d3e8">Bật tính năng AI</span>
+          </label>
+        </div>
+        <div class="form-hint mt-2">
+          Trạng thái API key:
+          <% if @ai_configured %><span style="color:#6ee7b7">● Đã cấu hình</span>
+          <% else %><span style="color:#fda4b4">● Chưa có ANTHROPIC_API_KEY</span><% end %>
+        </div>
+        <div class="mt-5"><%= submit_tag "Lưu cài đặt", class: "btn btn-primary" %></div>
+      <% end %>
+    </div>
+
+    <div class="card">
+      <div class="card-title mb-2">Tài khoản</div>
+      <div style="font-size:13.5px;color:#c7d3e8"><%= current_user.email %></div>
+      <div class="form-hint">Đổi mật khẩu: đăng xuất rồi dùng "Quên mật khẩu", hoặc liên hệ quản trị.</div>
+    </div>
+  </div>
+
+  <!-- Holidays -->
+  <div class="card">
+    <div class="card-title mb-3">Ngày nghỉ giao dịch (HOSE)</div>
+    <%= form_with url: trading_holidays_path, method: :post, class: "flex gap-2 items-end mb-4" do %>
+      <div style="flex:1">
+        <label class="form-label">Ngày</label>
+        <%= date_field_tag :holiday_on, nil, class: "form-input" %>
+      </div>
+      <div style="flex:1">
+        <label class="form-label">Tên</label>
+        <%= text_field_tag :name, nil, class: "form-input", placeholder: "Nghỉ lễ..." %>
+      </div>
+      <%= submit_tag "Thêm", class: "btn btn-ghost" %>
+    <% end %>
+    <div style="max-height:420px;overflow:auto">
+      <table class="data-table">
+        <thead><tr><th>Ngày</th><th>Tên</th><th></th></tr></thead>
+        <tbody>
+          <% @holidays.each do |h| %>
+            <tr>
+              <td><%= h.holiday_on.strftime("%d/%m/%Y") %></td>
+              <td style="color:#c7d3e8"><%= h.name %></td>
+              <td><%= button_to "Xoá", trading_holiday_path(h), method: :delete, class: "btn btn-danger btn-sm" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

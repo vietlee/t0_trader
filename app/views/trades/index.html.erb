@@ -1,0 +1,89 @@
+<% content_for :title, "Giao dịch · T0 Trader" %>
+<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+  <div>
+    <div class="page-title">Giao dịch</div>
+    <div class="page-sub"><%= @trades.size %> lệnh (mới nhất trước)</div>
+  </div>
+  <%= link_to new_trade_path, class: "btn btn-primary" do %>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    Ghi giao dịch
+  <% end %>
+</div>
+
+<div class="card mb-4">
+  <%= form_with url: trades_path, method: :get, data: { turbo_frame: "_top" } do %>
+    <div class="grid gap-3" style="grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr auto; align-items:end;">
+      <div>
+        <label class="form-label">Tìm mã</label>
+        <%= text_field_tag :q, params[:q], class: "form-input", placeholder: "FPT...", style:"text-transform:uppercase" %>
+      </div>
+      <div>
+        <label class="form-label">Loại</label>
+        <%= select_tag :side, options_for_select([["Tất cả", ""], ["Mua", "buy"], ["Bán", "sell"]], params[:side]), class: "form-select" %>
+      </div>
+      <div>
+        <label class="form-label">Trạng thái</label>
+        <%= select_tag :status, options_for_select([["Tất cả", ""]] + Trade.statuses.keys.map { |s| [ApplicationHelper::STATUS_LABELS[s], s] }, params[:status]), class: "form-select" %>
+      </div>
+      <div>
+        <label class="form-label">Từ ngày</label>
+        <%= date_field_tag :from, params[:from], class: "form-input" %>
+      </div>
+      <div>
+        <label class="form-label">Đến ngày</label>
+        <%= date_field_tag :to, params[:to], class: "form-input" %>
+      </div>
+      <div class="flex gap-2">
+        <%= submit_tag "Lọc", class: "btn btn-ghost" %>
+        <%= link_to "Xoá", trades_path, class: "btn btn-ghost" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="card">
+  <% if @trades.any? %>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Ngày</th><th>Loại</th><th>Mã</th><th class="num">KL</th><th class="num">Giá</th>
+            <th class="num">Giá trị</th><th class="num">Phí+thuế</th><th>Về (T+2)</th><th>Nhãn</th><th>Trạng thái</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @trades.each do |t| %>
+            <tr>
+              <td style="white-space:nowrap"><%= t.traded_at.strftime("%d/%m/%y") %><br><span style="font-size:11px;color:#7182a3"><%= t.traded_at.strftime("%H:%M") %></span></td>
+              <td><%= side_badge(t) %></td>
+              <td class="sym"><%= t.stock.symbol %></td>
+              <td class="num"><%= number_with_delimiter(t.quantity, delimiter: ".") %></td>
+              <td class="num"><%= vnd(t.price, unit: "") %></td>
+              <td class="num"><%= vnd_short(t.gross_amount) %></td>
+              <td class="num" style="color:#8595b4"><%= vnd_short(t.total_cost) %></td>
+              <td style="white-space:nowrap;font-size:12.5px">
+                <%= t.settlement_date&.strftime("%d/%m") %>
+                <% if t.side_buy? && !t.status_cancelled? %>
+                  <% if t.available_on? %><span class="badge badge-settled" style="font-size:9px">đã về</span>
+                  <% else %><span class="badge badge-pending" style="font-size:9px"><%= TradingCalendar.sessions_until(t.settlement_date) %> phiên</span><% end %>
+                <% end %>
+              </td>
+              <td><% if t.strategy_tag.present? %><span class="chip"><%= t.strategy_tag %></span><% end %></td>
+              <td>
+                <%= form_with url: status_trade_path(t), method: :patch do %>
+                  <%= select_tag :value, options_for_select(Trade.statuses.keys.map { |s| [ApplicationHelper::STATUS_LABELS[s], s] }, t.status),
+                        onchange: "this.form.requestSubmit()", class: "form-select", style: "padding:4px 8px;font-size:12px;width:auto" %>
+                <% end %>
+              </td>
+              <td style="white-space:nowrap">
+                <%= link_to "Sửa", edit_trade_path(t), class: "btn btn-ghost btn-sm" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="empty-state">Không có giao dịch nào khớp bộ lọc. <%= link_to "Ghi giao dịch", new_trade_path, style:"color:#6ee7b7" %></div>
+  <% end %>
+</div>

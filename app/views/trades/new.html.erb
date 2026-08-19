@@ -1,0 +1,11 @@
+<% content_for :title, "Ghi giao dịch · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Ghi giao dịch mới</div>
+    <div class="page-sub">Nhập lệnh mua/bán — phí, thuế và ngày về T+2 sẽ tự tính.</div>
+  </div>
+  <%= link_to "← Danh sách", trades_path, class: "btn btn-ghost" %>
+</div>
+<div class="card" style="max-width:760px">
+  <%= render "form", trade: @trade %>
+</div>

@@ -1,0 +1,6 @@
+<% content_for :title, "Ghi dòng tiền · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div class="page-title">Ghi dòng tiền</div>
+  <%= link_to "← Danh sách", cash_flows_path, class: "btn btn-ghost" %>
+</div>
+<div class="card" style="max-width:560px"><%= render "form", cash_flow: @cash_flow %></div>

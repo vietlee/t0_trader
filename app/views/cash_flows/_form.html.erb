@@ -1,0 +1,28 @@
+<%= form_with model: cash_flow do |f| %>
+  <% if cash_flow.errors.any? %>
+    <div class="flash flash-alert"><%= cash_flow.errors.full_messages.to_sentence %></div>
+  <% end %>
+  <div class="form-row" style="grid-template-columns: 1fr 1fr;">
+    <div>
+      <%= f.label :kind, "Loại", class: "form-label" %>
+      <%= f.select :kind, cash_flow_kind_options, {}, class: "form-select" %>
+    </div>
+    <div>
+      <%= f.label :occurred_on, "Ngày", class: "form-label" %>
+      <%= f.date_field :occurred_on, class: "form-input" %>
+    </div>
+  </div>
+  <div class="mt-4" style="max-width:300px">
+    <%= f.label :amount, "Số tiền (₫)", class: "form-label" %>
+    <%= f.number_field :amount, step: "any", class: "form-input", placeholder: "100000000" %>
+    <div class="form-hint">Rút tiền: nhập số dương, hệ thống tự trừ.</div>
+  </div>
+  <div class="mt-4">
+    <%= f.label :note, "Ghi chú", class: "form-label" %>
+    <%= f.text_field :note, class: "form-input" %>
+  </div>
+  <div class="flex gap-3 mt-5">
+    <%= f.submit (cash_flow.persisted? ? "Lưu" : "Ghi"), class: "btn btn-primary" %>
+    <%= link_to "Huỷ", cash_flows_path, class: "btn btn-ghost" %>
+  </div>
+<% end %>

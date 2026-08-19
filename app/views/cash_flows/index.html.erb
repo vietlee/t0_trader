@@ -1,0 +1,46 @@
+<% content_for :title, "Dòng tiền · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Dòng tiền</div>
+    <div class="page-sub">Nạp/rút vốn, cổ tức, lãi — nền tảng tính vốn & tiền mặt.</div>
+  </div>
+  <%= link_to "+ Ghi dòng tiền", new_cash_flow_path, class: "btn btn-primary" %>
+</div>
+
+<div class="kpi-grid mb-5" style="grid-template-columns: repeat(2, minmax(0,1fr)); max-width:520px">
+  <div class="card kpi">
+    <div class="kpi-label">Vốn đã nạp (ròng)</div>
+    <div class="kpi-value" title="<%= vnd(@capital_in) %>"><%= vnd_short(@capital_in) %></div>
+  </div>
+  <div class="card kpi">
+    <div class="kpi-label">Tiền mặt hiện tại</div>
+    <div class="kpi-value" title="<%= vnd(@cash) %>"><%= vnd_short(@cash) %></div>
+  </div>
+</div>
+
+<div class="card">
+  <% if @cash_flows.any? %>
+    <table class="data-table">
+      <thead><tr><th>Ngày</th><th>Loại</th><th class="num">Số tiền</th><th>Ghi chú</th><th></th></tr></thead>
+      <tbody>
+        <% @cash_flows.each do |cf| %>
+          <tr>
+            <td><%= cf.occurred_on.strftime("%d/%m/%Y") %></td>
+            <td><span class="chip"><%= cash_flow_kind_label(cf.kind) %></span></td>
+            <td class="num <%= cf.cash_delta.negative? ? 'text-rose-400' : 'text-emerald-400' %>">
+              <%= cf.cash_delta.negative? ? "-" : "+" %><%= vnd(cf.amount.abs) %>
+            </td>
+            <td style="color:#8595b4"><%= cf.note %></td>
+            <td class="flex gap-1">
+              <%= link_to "Sửa", edit_cash_flow_path(cf), class: "btn btn-ghost btn-sm" %>
+              <%= button_to "Xoá", cash_flow_path(cf), method: :delete, class: "btn btn-danger btn-sm",
+                    form: { data: { turbo_confirm: "Xoá?" } } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="empty-state">Chưa có dòng tiền nào. <%= link_to "Ghi nạp vốn đầu tiên", new_cash_flow_path, style:"color:#6ee7b7" %></div>
+  <% end %>
+</div>

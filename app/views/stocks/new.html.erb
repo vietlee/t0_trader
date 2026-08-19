@@ -1,0 +1,6 @@
+<% content_for :title, "Thêm mã · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div class="page-title">Thêm mã cổ phiếu</div>
+  <%= link_to "← Danh sách", stocks_path, class: "btn btn-ghost" %>
+</div>
+<div class="card" style="max-width:640px"><%= render "form", stock: @stock %></div>

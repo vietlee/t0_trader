@@ -1,0 +1,15 @@
+<% content_for :title, "Sửa giao dịch · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Sửa giao dịch <%= @trade.stock.symbol %></div>
+    <div class="page-sub"><%= side_badge(@trade) %> · <%= @trade.traded_at.strftime("%d/%m/%Y %H:%M") %> · về <%= @trade.settlement_date&.strftime("%d/%m/%Y") %></div>
+  </div>
+  <div class="flex gap-2">
+    <%= button_to "Xoá", trade_path(@trade), method: :delete, class: "btn btn-danger",
+          form: { data: { turbo_confirm: "Xoá giao dịch này?" } } %>
+    <%= link_to "← Danh sách", trades_path, class: "btn btn-ghost" %>
+  </div>
+</div>
+<div class="card" style="max-width:760px">
+  <%= render "form", trade: @trade %>
+</div>

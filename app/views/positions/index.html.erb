@@ -1,0 +1,77 @@
+<% content_for :title, "Vị thế & T+0 · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Vị thế & Kiểm soát T+0</div>
+    <div class="page-sub">Biết chính xác mỗi mã bán được bao nhiêu <b style="color:#6ee7b7">hôm nay</b> và bao nhiêu đang chờ về.</div>
+  </div>
+  <%= link_to new_trade_path, class: "btn btn-primary" do %>+ Ghi giao dịch<% end %>
+</div>
+
+<div class="kpi-grid mb-5">
+  <div class="card kpi"><div class="kpi-label">Giá trị CP đang giữ</div><div class="kpi-value" title="<%= vnd(@market_value) %>"><%= vnd_short(@market_value) %></div></div>
+  <div class="card kpi"><div class="kpi-label">Lãi/lỗ chưa hiện thực</div><div class="kpi-value <%= pnl_color(@unrealized) %>"><%= @unrealized >= 0 ? "+" : "" %><%= vnd_short(@unrealized) %></div></div>
+  <div class="card kpi" style="border-color:rgba(16,185,129,.3)"><div class="kpi-label" style="color:#6ee7b7">⚡ Sẵn sàng bán hôm nay</div><div class="kpi-value" style="color:#6ee7b7"><%= number_with_delimiter(@total_available, delimiter: ".") %> <span style="font-size:14px;color:#8595b4">CP</span></div></div>
+  <div class="card kpi" style="border-color:rgba(245,158,11,.3)"><div class="kpi-label" style="color:#fcd34d">Đang về (T+)</div><div class="kpi-value" style="color:#fcd34d"><%= number_with_delimiter(@total_pending, delimiter: ".") %> <span style="font-size:14px;color:#8595b4">CP</span></div></div>
+</div>
+
+<% if @positions.any? %>
+  <div class="card mb-5">
+    <div class="card-header"><div class="card-title">Chi tiết vị thế</div></div>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Mã</th><th class="num">Tổng KL</th>
+            <th class="num" style="color:#6ee7b7">Bán được</th><th class="num" style="color:#fcd34d">Đang về</th>
+            <th class="num">Giá vốn</th><th class="num">Giá TT</th><th class="num">Giá trị</th><th class="num">Lãi/lỗ</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @positions.each do |pos| %>
+            <tr>
+              <td class="sym"><%= pos.stock.symbol %><div style="font-size:11px;color:#7182a3;font-weight:400"><%= pos.stock.name %></div></td>
+              <td class="num"><%= number_with_delimiter(pos.quantity, delimiter: ".") %></td>
+              <td class="num" style="color:#6ee7b7;font-weight:700"><%= number_with_delimiter(pos.available_qty, delimiter: ".") %></td>
+              <td class="num" style="color:#fcd34d"><%= pos.pending_qty.positive? ? number_with_delimiter(pos.pending_qty, delimiter: ".") : "—" %></td>
+              <td class="num"><%= vnd(pos.avg_cost, unit: "") %></td>
+              <td class="num"><%= pos.market_price ? vnd(pos.market_price, unit: "") : "—" %></td>
+              <td class="num"><%= vnd_short(pos.market_value) %></td>
+              <td class="num"><%= pnl(pos.unrealized, short: true) %> <span style="font-size:11px"><%= pnl_pct(pos.unrealized_pct) %></span></td>
+              <td class="flex gap-1" style="white-space:nowrap">
+                <% if pos.available_qty.positive? %>
+                  <%= link_to "Bán", new_trade_path(side: "sell", stock_id: pos.stock.id), class: "btn btn-danger btn-sm" %>
+                <% end %>
+                <%= link_to "Mua", new_trade_path(side: "buy", stock_id: pos.stock.id), class: "btn btn-ghost btn-sm" %>
+              </td>
+            </tr>
+            <% if pos.pending_lots.any? %>
+              <tr><td colspan="9" style="padding-top:0;border:none">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;padding:2px 4px 10px">
+                  <% pos.pending_lots.each do |lot| %>
+                    <span class="chip" style="background:rgba(245,158,11,.1);color:#fcd34d">
+                      <span class="tag-dot" style="background:#f59e0b"></span>
+                      <%= number_with_delimiter(lot[:qty], delimiter: ".") %> CP về <%= lot[:settlement_date]&.strftime("%d/%m") %>
+                      <% if lot[:sessions] %>(còn <%= lot[:sessions] %> phiên)<% end %>
+                    </span>
+                  <% end %>
+                </div>
+              </td></tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)">
+    <div class="card-title" style="color:#6ee7b7;margin-bottom:8px">💡 Chiến thuật T+0</div>
+    <div style="font-size:13.5px;color:#c7d3e8;line-height:1.65">
+      Giữ một lượng <b>hàng đã về</b> (cột "Bán được") làm "kho" cho mỗi mã bạn giao dịch thường xuyên.
+      Khi giá tăng trong phiên, bán ra từ kho có sẵn để chốt lời; sau đó mua lại để bù kho — lô mua mới sẽ về sau 2 phiên.
+      Nhờ vậy bạn xoay vòng được trong ngày mà không bị kẹt T+2. Chia lệnh mua thành nhiều lô ở các phiên khác nhau
+      để luôn có hàng sẵn sàng.
+    </div>
+  </div>
+<% else %>
+  <div class="card"><div class="empty-state">Chưa có vị thế đang mở. <%= link_to "Ghi giao dịch mua", new_trade_path(side: "buy"), style:"color:#6ee7b7" %></div></div>
+<% end %>

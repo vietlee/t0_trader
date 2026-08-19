@@ -1,0 +1,41 @@
+<% content_for :title, "AI Coach · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">AI Coach</div>
+    <div class="page-sub">Hỏi bất cứ điều gì về danh mục của bạn — AI trả lời dựa trên dữ liệu thực tế.</div>
+  </div>
+</div>
+
+<% unless @configured %>
+  <div class="flash flash-alert mb-5">Chưa cấu hình <code>ANTHROPIC_API_KEY</code>. Thêm biến môi trường này để bật AI Coach.</div>
+<% end %>
+
+<div class="card" style="max-width:860px">
+  <div style="display:flex;flex-direction:column;gap:12px;min-height:320px;max-height:56vh;overflow:auto;padding-right:6px" id="chat-scroll">
+    <% if @messages.empty? %>
+      <div class="empty-state">
+        Bắt đầu bằng một câu hỏi, ví dụ:<br>
+        <div class="flex gap-2 justify-center flex-wrap mt-3">
+          <% ["Tháng này tôi giao dịch có kỷ luật không?", "Mã nào đang lỗ nặng nhất?", "Phí đang bào mòn lợi nhuận bao nhiêu?", "Tôi có đang cắt lời quá sớm không?"].each do |q| %>
+            <span class="chip"><%= q %></span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <% @messages.each do |m| %>
+      <div class="chat-msg <%= m.role_user? ? 'chat-user' : 'chat-ai' %>">
+        <% if m.role_assistant? %><div class="md"><%= simple_markdown(m.content) %></div><% else %><%= simple_format(m.content) %><% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="divider"></div>
+  <%= form_with url: ai_coach_message_path, method: :post, class: "flex gap-3" do %>
+    <%= text_field_tag :content, nil, class: "form-input", placeholder: "Nhập câu hỏi về danh mục của bạn…", autofocus: true, disabled: !@configured %>
+    <%= submit_tag "Gửi", class: "btn btn-primary", disabled: !@configured %>
+  <% end %>
+</div>
+
+<script>
+  (() => { const el = document.getElementById("chat-scroll"); if (el) el.scrollTop = el.scrollHeight; })();
+</script>
