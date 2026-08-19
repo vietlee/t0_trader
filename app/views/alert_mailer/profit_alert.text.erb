@@ -1,0 +1,14 @@
+T0 TRADER — Cảnh báo biến động vượt ngưỡng <%= @threshold.to_i %>%
+
+Các mã đang giữ đạt mức lời/lỗ đáng chú ý so với giá vốn:
+
+<% @alerts.each do |a| -%>
+- <%= a[:stock].symbol %> (<%= a[:stock].name %>): <%= format('%+.2f', a[:pct]) %>%
+  Giá vốn <%= number_with_delimiter(a[:avg_cost].to_i, delimiter: '.') %>đ | Giá hiện tại <%= number_with_delimiter(a[:price].to_i, delimiter: '.') %>đ | Đang giữ <%= number_with_delimiter(a[:quantity], delimiter: '.') %> CP
+  Lãi/lỗ: <%= number_with_delimiter(a[:unrealized].to_i, delimiter: '.') %>đ — <%= a[:direction] == 'profit' ? 'Cân nhắc chốt lời' : 'Cân nhắc cắt lỗ' %>
+
+<% end -%>
+Mở danh mục: https://stock.czin.net/positions
+
+Đây là cảnh báo tự động dựa trên dữ liệu của bạn, không phải khuyến nghị đầu tư.
+Tắt cảnh báo trong Cài đặt.

@@ -23,8 +23,9 @@
     </div>
   </div>
   <div class="mt-4" style="max-width:260px">
-    <%= f.label :current_price, "Giá hiện tại (₫)", class: "form-label" %>
-    <%= f.number_field :current_price, step: "any", class: "form-input", placeholder: "138000" %>
+    <%= f.label :current_price, "Giá hiện tại (đ)", class: "form-label" %>
+    <%= f.text_field :current_price, value: stock.current_price&.to_i, inputmode: "numeric", class: "form-input", placeholder: "138.000",
+          data: { controller: "numeric-input" } %>
   </div>
   <div class="flex gap-3 mt-5">
     <%= f.submit (stock.persisted? ? "Lưu" : "Thêm mã"), class: "btn btn-primary" %>

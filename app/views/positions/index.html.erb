@@ -4,7 +4,13 @@
     <div class="page-title">Vị thế & Kiểm soát T+0</div>
     <div class="page-sub">Biết chính xác mỗi mã bán được bao nhiêu <b style="color:#6ee7b7">hôm nay</b> và bao nhiêu đang chờ về.</div>
   </div>
-  <%= link_to new_trade_path, class: "btn btn-primary" do %>+ Ghi giao dịch<% end %>
+  <div class="flex gap-2">
+    <%= button_to refresh_stocks_path, class: "btn btn-ghost" do %>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Tự lấy giá
+    <% end %>
+    <%= link_to new_trade_path, class: "btn btn-primary" do %>+ Ghi giao dịch<% end %>
+  </div>
 </div>
 
 <div class="kpi-grid mb-5">
@@ -23,7 +29,7 @@
           <tr>
             <th>Mã</th><th class="num">Tổng KL</th>
             <th class="num" style="color:#6ee7b7">Bán được</th><th class="num" style="color:#fcd34d">Đang về</th>
-            <th class="num">Giá vốn</th><th class="num">Giá TT</th><th class="num">Giá trị</th><th class="num">Lãi/lỗ</th><th></th>
+            <th class="num">Giá vốn</th><th class="num">Giá TT</th><th class="num">Giá trị</th><th class="num">Lãi/lỗ</th><th>Gợi ý</th><th></th>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +43,7 @@
               <td class="num"><%= pos.market_price ? vnd(pos.market_price, unit: "") : "—" %></td>
               <td class="num"><%= vnd_short(pos.market_value) %></td>
               <td class="num"><%= pnl(pos.unrealized, short: true) %> <span style="font-size:11px"><%= pnl_pct(pos.unrealized_pct) %></span></td>
+              <td><%= position_suggestion(pos.unrealized_pct, current_user.alert_threshold_pct) if pos.market_price %></td>
               <td class="flex gap-1" style="white-space:nowrap">
                 <% if pos.available_qty.positive? %>
                   <%= link_to "Bán", new_trade_path(side: "sell", stock_id: pos.stock.id), class: "btn btn-danger btn-sm" %>
@@ -45,7 +52,7 @@
               </td>
             </tr>
             <% if pos.pending_lots.any? %>
-              <tr><td colspan="9" style="padding-top:0;border:none">
+              <tr><td colspan="10" style="padding-top:0;border:none">
                 <div style="display:flex;gap:8px;flex-wrap:wrap;padding:2px 4px 10px">
                   <% pos.pending_lots.each do |lot| %>
                     <span class="chip" style="background:rgba(245,158,11,.1);color:#fcd34d">

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#0b0f1a;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f1a;padding:24px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#151b2b;border-radius:16px;border:1px solid #232a3d;overflow:hidden;">
+        <tr><td style="padding:22px 26px;border-bottom:1px solid #232a3d;">
+          <span style="display:inline-block;width:30px;height:30px;background:#10b981;border-radius:8px;color:#04120c;font-weight:bold;text-align:center;line-height:30px;font-size:13px;">T0</span>
+          <span style="color:#f3f7fc;font-size:16px;font-weight:bold;vertical-align:middle;margin-left:8px;">T0 Trader</span>
+        </td></tr>
+        <tr><td style="padding:24px 26px 8px;">
+          <div style="color:#f3f7fc;font-size:18px;font-weight:bold;">🔔 Cảnh báo biến động vượt ngưỡng <%= @threshold.to_i %>%</div>
+          <div style="color:#8595b4;font-size:13px;margin-top:6px;">Các mã đang giữ đã đạt mức lời/lỗ đáng chú ý so với giá vốn:</div>
+        </td></tr>
+        <tr><td style="padding:8px 26px 20px;">
+          <% @alerts.each do |a| %>
+            <% up = a[:direction] == "profit" %>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f1420;border:1px solid #232a3d;border-radius:12px;margin-top:12px;">
+              <tr><td style="padding:14px 16px;">
+                <table width="100%"><tr>
+                  <td style="color:#f3f7fc;font-size:17px;font-weight:bold;"><%= a[:stock].symbol %>
+                    <span style="color:#7182a3;font-size:12px;font-weight:normal;"><%= a[:stock].name %></span>
+                  </td>
+                  <td align="right" style="color:<%= up ? '#6ee7b7' : '#fda4b4' %>;font-size:20px;font-weight:bold;"><%= format('%+.2f', a[:pct]) %>%</td>
+                </tr></table>
+                <table width="100%" style="margin-top:8px;color:#9fb0cc;font-size:13px;"><tr>
+                  <td>Giá vốn: <b style="color:#c7d3e8;"><%= number_with_delimiter(a[:avg_cost].to_i, delimiter: '.') %>đ</b></td>
+                  <td align="right">Giá hiện tại: <b style="color:#c7d3e8;"><%= number_with_delimiter(a[:price].to_i, delimiter: '.') %>đ</b></td>
+                </tr><tr>
+                  <td style="padding-top:4px;">Đang giữ: <b style="color:#c7d3e8;"><%= number_with_delimiter(a[:quantity], delimiter: '.') %> CP</b></td>
+                  <td align="right" style="padding-top:4px;">Lãi/lỗ: <b style="color:<%= up ? '#6ee7b7' : '#fda4b4' %>;"><%= number_with_delimiter(a[:unrealized].to_i, delimiter: '.') %>đ</b></td>
+                </tr></table>
+                <div style="margin-top:8px;color:<%= up ? '#6ee7b7' : '#fda4b4' %>;font-size:13px;font-weight:bold;">
+                  <%= up ? '📈 Cân nhắc chốt lời để không bỏ lỡ' : '📉 Cân nhắc cắt lỗ / xem lại vị thế' %>
+                </div>
+              </td></tr>
+            </table>
+          <% end %>
+        </td></tr>
+        <tr><td style="padding:0 26px 26px;">
+          <a href="https://stock.czin.net/positions" style="display:inline-block;background:#10b981;color:#03110b;text-decoration:none;font-weight:bold;padding:11px 20px;border-radius:10px;font-size:14px;">Mở danh mục →</a>
+        </td></tr>
+        <tr><td style="padding:16px 26px;border-top:1px solid #232a3d;color:#5b6784;font-size:11px;">
+          Đây là cảnh báo tự động dựa trên dữ liệu của bạn, không phải khuyến nghị đầu tư. Tắt cảnh báo trong Cài đặt.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

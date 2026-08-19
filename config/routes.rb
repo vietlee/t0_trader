@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     member do
       patch :price
     end
+    collection do
+      post :refresh
+    end
   end
 
   resources :cash_flows, except: [:show]

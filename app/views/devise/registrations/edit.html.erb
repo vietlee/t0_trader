@@ -9,17 +9,14 @@
     <%= f.email_field :email, autocomplete: "email", class: "form-input" %>
   </div>
   <div class="mb-4">
-    <%= f.label :password, "Mật khẩu mới", class: "form-label" %>
-    <%= f.password_field :password, autocomplete: "new-password", class: "form-input", placeholder: "Để trống nếu không đổi" %>
+    <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu mới", autocomplete: "new-password", placeholder: "Để trống nếu không đổi" %>
     <div class="form-hint">Tối thiểu <%= @minimum_password_length %> ký tự.</div>
   </div>
   <div class="mb-4">
-    <%= f.label :password_confirmation, "Nhập lại mật khẩu mới", class: "form-label" %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input" %>
+    <%= render "shared/password_field", f: f, method: :password_confirmation, label: "Nhập lại mật khẩu mới", autocomplete: "new-password" %>
   </div>
   <div class="mb-5">
-    <%= f.label :current_password, "Mật khẩu hiện tại", class: "form-label" %>
-    <%= f.password_field :current_password, autocomplete: "current-password", class: "form-input", placeholder: "Xác nhận để lưu thay đổi" %>
+    <%= render "shared/password_field", f: f, method: :current_password, label: "Mật khẩu hiện tại", autocomplete: "current-password", placeholder: "Xác nhận để lưu thay đổi" %>
     <div class="form-hint">Cần mật khẩu hiện tại để xác nhận thay đổi.</div>
   </div>
   <%= f.submit "Lưu thay đổi", class: "btn btn-primary", style: "width:100%; justify-content:center" %>

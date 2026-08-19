@@ -72,6 +72,19 @@ module ApplicationHelper
                 class: "badge badge-status badge-#{trade.status}")
   end
 
+  # Gợi ý hành động dựa trên % lời/lỗ so với ngưỡng cảnh báo của user.
+  def position_suggestion(pct, threshold)
+    p = pct.to_f
+    t = threshold.to_f
+    if t.positive? && p >= t
+      content_tag(:span, "Cân nhắc chốt lời", class: "badge", style: "background:rgba(16,185,129,.18);color:#6ee7b7")
+    elsif t.positive? && p <= -t
+      content_tag(:span, "Cân nhắc cắt lỗ", class: "badge", style: "background:rgba(244,63,94,.18);color:#fda4b4")
+    else
+      content_tag(:span, "Tiếp tục giữ", class: "badge", style: "background:rgba(148,163,184,.14);color:#9fb0cc")
+    end
+  end
+
   def nav_link(name, path, icon)
     active = current_page?(path) || (path != root_path && request.path.start_with?(path))
     classes = ["nav-link"]

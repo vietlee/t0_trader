@@ -76,6 +76,20 @@ Rails.application.configure do
   # URL host cho mailer/route helpers.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "stock.czin.net"), protocol: "https" }
 
+  # Email qua SMTP (Brevo — dùng chung hạ tầng VOX).
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.smtp_settings = {
+    address:              ENV.fetch("SMTP_HOST", "smtp-relay.brevo.com"),
+    port:                 ENV.fetch("SMTP_PORT", "2525").to_i,
+    domain:               ENV.fetch("SMTP_DOMAIN", "stock.czin.net"),
+    user_name:            ENV["SMTP_USERNAME"],
+    password:             ENV["SMTP_PASSWORD"],
+    authentication:       "plain",
+    enable_starttls_auto: true
+  }
+
   # Disable caching for Action Mailer templates even if Action Controller
   # caching is enabled.
   config.action_mailer.perform_caching = false

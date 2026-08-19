@@ -9,12 +9,10 @@
     <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input", placeholder: "you@example.com" %>
   </div>
   <div class="mb-4">
-    <%= f.label :password, "Mật khẩu", class: "form-label" %>
-    <%= f.password_field :password, autocomplete: "new-password", class: "form-input", placeholder: "Tối thiểu #{@minimum_password_length} ký tự" %>
+    <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu", autocomplete: "new-password", placeholder: "Tối thiểu #{@minimum_password_length} ký tự" %>
   </div>
   <div class="mb-5">
-    <%= f.label :password_confirmation, "Nhập lại mật khẩu", class: "form-label" %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input", placeholder: "••••••••" %>
+    <%= render "shared/password_field", f: f, method: :password_confirmation, label: "Nhập lại mật khẩu", autocomplete: "new-password" %>
   </div>
   <%= f.submit "Đăng ký & vào ngay", class: "btn btn-primary", style: "width:100%; justify-content:center" %>
 <% end %>

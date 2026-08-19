@@ -8,8 +8,7 @@
     <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input", placeholder: "you@example.com" %>
   </div>
   <div class="mb-4">
-    <%= f.label :password, "Mật khẩu", class: "form-label" %>
-    <%= f.password_field :password, autocomplete: "current-password", class: "form-input", placeholder: "••••••••" %>
+    <%= render "shared/password_field", f: f, method: :password, label: "Mật khẩu", autocomplete: "current-password" %>
   </div>
   <% if devise_mapping.rememberable? %>
     <label class="flex items-center gap-2 mb-5" style="cursor:pointer;font-size:13.5px;color:#c7d3e8">

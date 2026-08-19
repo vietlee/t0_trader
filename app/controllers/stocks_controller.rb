@@ -45,6 +45,16 @@ class StocksController < ApplicationController
     redirect_back fallback_location: stocks_path, notice: "Đã cập nhật giá #{@stock.symbol}."
   end
 
+  # Tự lấy giá VN cho các mã đang nắm giữ (VNDirect).
+  def refresh
+    ids = PriceUpdater.held_stock_ids
+    ids = Stock.pluck(:id) if ids.empty?
+    result = PriceUpdater.run(Stock.where(id: ids))
+    notice = "Đã cập nhật giá #{result.updated} mã từ VNDirect."
+    notice += " Không lấy được: #{result.failed.join(', ')}." if result.failed.any?
+    redirect_back fallback_location: stocks_path, notice: notice
+  end
+
   private
 
   def set_stock

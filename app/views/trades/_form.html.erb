@@ -30,13 +30,13 @@
   <div class="form-row mt-4" style="grid-template-columns: 1fr 1fr;">
     <div>
       <%= f.label :quantity, "Khối lượng (CP)", class: "form-label" %>
-      <%= f.number_field :quantity, class: "form-input", placeholder: "1000",
-            data: { trade_form_target: "quantity", action: "input->trade-form#recalc" } %>
+      <%= f.text_field :quantity, value: trade.quantity, inputmode: "numeric", class: "form-input", placeholder: "1.000",
+            data: { controller: "numeric-input", trade_form_target: "quantity", action: "input->numeric-input#format input->trade-form#recalc" } %>
     </div>
     <div>
-      <%= f.label :price, "Giá khớp (₫/CP)", class: "form-label" %>
-      <%= f.number_field :price, step: "any", class: "form-input", placeholder: "25000",
-            data: { trade_form_target: "price", action: "input->trade-form#recalc" } %>
+      <%= f.label :price, "Giá khớp (đ/CP)", class: "form-label" %>
+      <%= f.text_field :price, value: trade.price&.to_i, inputmode: "numeric", class: "form-input", placeholder: "25.000",
+            data: { controller: "numeric-input", trade_form_target: "price", action: "input->numeric-input#format input->trade-form#recalc" } %>
     </div>
   </div>
 
@@ -54,15 +54,15 @@
 
   <div class="form-row mt-4" style="grid-template-columns: 1fr 1fr;">
     <div>
-      <%= f.label :fee, "Phí giao dịch (₫)", class: "form-label" %>
-      <%= f.number_field :fee, step: "any", class: "form-input",
-            data: { trade_form_target: "fee", action: "input->trade-form#markFee input->trade-form#recalc" } %>
+      <%= f.label :fee, "Phí giao dịch (đ)", class: "form-label" %>
+      <%= f.text_field :fee, value: trade.fee&.to_i, inputmode: "numeric", class: "form-input",
+            data: { controller: "numeric-input", trade_form_target: "fee", action: "input->numeric-input#format input->trade-form#markFee input->trade-form#recalc" } %>
       <div class="form-hint" data-trade-form-target="feeHint"></div>
     </div>
     <div>
-      <%= f.label :tax, "Thuế bán (₫)", class: "form-label" %>
-      <%= f.number_field :tax, step: "any", class: "form-input",
-            data: { trade_form_target: "tax", action: "input->trade-form#markTax input->trade-form#recalc" } %>
+      <%= f.label :tax, "Thuế bán (đ)", class: "form-label" %>
+      <%= f.text_field :tax, value: trade.tax&.to_i, inputmode: "numeric", class: "form-input",
+            data: { controller: "numeric-input", trade_form_target: "tax", action: "input->numeric-input#format input->trade-form#markTax input->trade-form#recalc" } %>
       <div class="form-hint">Chỉ áp dụng khi bán (0,1%).</div>
     </div>
   </div>

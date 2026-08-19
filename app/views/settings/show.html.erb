@@ -45,6 +45,17 @@
           <% if @ai_configured %><span style="color:#6ee7b7">● Đã cấu hình</span>
           <% else %><span style="color:#fda4b4">● Chưa có ANTHROPIC_API_KEY</span><% end %>
         </div>
+        <div class="card-title mb-3 mt-5">Cảnh báo qua email</div>
+        <label class="flex items-center gap-2 mb-3" style="cursor:pointer">
+          <%= check_box_tag :alert_enabled, "1", current_user.alert_enabled? %>
+          <span style="font-size:14px;color:#c7d3e8">Gửi email khi lời/lỗ vượt ngưỡng</span>
+        </label>
+        <div style="max-width:260px">
+          <label class="form-label">Ngưỡng % lời/lỗ</label>
+          <%= number_field_tag :alert_threshold_pct, current_user.alert_threshold_pct, step: "0.5", min: "0.5", class: "form-input" %>
+          <div class="form-hint">VD 5 → khi giá hiện tại chênh ±5% so với giá vốn của mã đang giữ, gửi email nhắc (giờ giao dịch). Cần bật giá tự động.</div>
+        </div>
+
         <div class="mt-5"><%= submit_tag "Lưu cài đặt", class: "btn btn-primary" %></div>
       <% end %>
     </div>

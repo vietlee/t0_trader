@@ -13,8 +13,9 @@
     </div>
   </div>
   <div class="mt-4" style="max-width:300px">
-    <%= f.label :amount, "Số tiền (₫)", class: "form-label" %>
-    <%= f.number_field :amount, step: "any", class: "form-input", placeholder: "100000000" %>
+    <%= f.label :amount, "Số tiền (đ)", class: "form-label" %>
+    <%= f.text_field :amount, value: cash_flow.amount&.to_i, inputmode: "numeric", class: "form-input", placeholder: "100.000.000",
+          data: { controller: "numeric-input" } %>
     <div class="form-hint">Rút tiền: nhập số dương, hệ thống tự trừ.</div>
   </div>
   <div class="mt-4">
