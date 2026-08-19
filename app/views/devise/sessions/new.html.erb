@@ -18,3 +18,9 @@
   <% end %>
   <%= f.submit "Đăng nhập", class: "btn btn-primary", style: "width:100%; justify-content:center" %>
 <% end %>
+
+<% if devise_mapping.registerable? %>
+  <div style="text-align:center; margin-top:16px; font-size:13.5px; color:#8595b4">
+    Chưa có tài khoản? <%= link_to "Đăng ký ngay", new_registration_path(resource_name), style: "color:#6ee7b7; font-weight:600" %>
+  </div>
+<% end %>

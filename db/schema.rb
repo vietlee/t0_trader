@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_19_080340) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_19_094005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,8 +33,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_080340) do
     t.jsonb "context", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["created_at"], name: "index_ai_insights_on_created_at"
     t.index ["kind"], name: "index_ai_insights_on_kind"
+    t.index ["user_id"], name: "index_ai_insights_on_user_id"
   end
 
   create_table "ai_messages", force: :cascade do |t|
@@ -42,7 +44,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_080340) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["created_at"], name: "index_ai_messages_on_created_at"
+    t.index ["user_id"], name: "index_ai_messages_on_user_id"
   end
 
   create_table "cash_flows", force: :cascade do |t|
@@ -122,6 +126,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_080340) do
   end
 
   add_foreign_key "accounts", "users"
+  add_foreign_key "ai_insights", "users"
+  add_foreign_key "ai_messages", "users"
   add_foreign_key "cash_flows", "accounts"
   add_foreign_key "trades", "accounts"
   add_foreign_key "trades", "stocks"

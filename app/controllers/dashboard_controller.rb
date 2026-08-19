@@ -21,7 +21,7 @@ class DashboardController < ApplicationController
     @recent_trades = current_account.trades.includes(:stock).recent.limit(8)
     @equity_curve = @p.equity_curve
     @period_series = period_series(@p)
-    @latest_insight = AiInsight.status_done.recent.first
+    @latest_insight = current_user.ai_insights.status_done.recent.first
   end
 
   private

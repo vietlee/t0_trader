@@ -1,0 +1,24 @@
+<% content_for :title, "Đăng ký · T0 Trader" %>
+<h2 style="font-size:18px;font-weight:700;margin-bottom:4px">Tạo tài khoản</h2>
+<p style="font-size:13px;color:#8595b4;margin-bottom:18px">Chỉ cần email và mật khẩu — dùng được ngay.</p>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+  <div class="mb-4">
+    <%= f.label :email, "Email", class: "form-label" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input", placeholder: "you@example.com" %>
+  </div>
+  <div class="mb-4">
+    <%= f.label :password, "Mật khẩu", class: "form-label" %>
+    <%= f.password_field :password, autocomplete: "new-password", class: "form-input", placeholder: "Tối thiểu #{@minimum_password_length} ký tự" %>
+  </div>
+  <div class="mb-5">
+    <%= f.label :password_confirmation, "Nhập lại mật khẩu", class: "form-label" %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input", placeholder: "••••••••" %>
+  </div>
+  <%= f.submit "Đăng ký & vào ngay", class: "btn btn-primary", style: "width:100%; justify-content:center" %>
+<% end %>
+
+<div style="text-align:center; margin-top:16px; font-size:13.5px; color:#8595b4">
+  Đã có tài khoản? <%= link_to "Đăng nhập", new_session_path(resource_name), style: "color:#6ee7b7; font-weight:600" %>
+</div>

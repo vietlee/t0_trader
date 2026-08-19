@@ -5,7 +5,7 @@ class TradingFlowsTest < ActionDispatch::IntegrationTest
 
   setup do
     @user = User.create!(email: "flow@example.com", password: "password123")
-    @account = @user.accounts.create!(name: "Chính")
+    @account = @user.primary_account # tạo tự động sau khi user được tạo
     sign_in @user
   end
 
@@ -42,6 +42,20 @@ class TradingFlowsTest < ActionDispatch::IntegrationTest
     patch price_stock_path(stock), params: { current_price: 47_500 }
     assert_equal 47_500, stock.reload.current_price
     assert stock.price_updated_at.present?
+  end
+
+  test "đăng ký tài khoản mới tự tạo danh mục và vào được ngay" do
+    sign_out @user
+    assert_difference -> { User.count } => 1, -> { Account.count } => 1 do
+      post user_registration_path, params: { user: {
+        email: "newbie@example.com", password: "password123", password_confirmation: "password123"
+      } }
+    end
+    assert_redirected_to root_path
+    new_user = User.find_by(email: "newbie@example.com")
+    assert new_user.primary_account.present?, "user mới phải có danh mục chính"
+    follow_redirect!
+    assert_response :success
   end
 
   test "dashboard, positions, reports render 200" do

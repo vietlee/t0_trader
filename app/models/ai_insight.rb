@@ -1,4 +1,6 @@
 class AiInsight < ApplicationRecord
+  belongs_to :user
+
   enum :kind, { journal: 0, weekly: 1, pattern: 2, risk: 3 }, prefix: true
   enum :status, { queued: 0, processing: 1, done: 2, failed: 3 }, prefix: true
 

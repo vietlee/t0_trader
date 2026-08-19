@@ -1,13 +1,13 @@
 module Ai
   class InsightsController < ApplicationController
     def index
-      @insights = AiInsight.recent.limit(30).to_a
+      @insights = current_user.ai_insights.recent.limit(30).to_a
       @configured = Anthropic::Client.configured?
       @kinds = AiInsight::KIND_LABELS
     end
 
     def show
-      @insight = AiInsight.find(params[:id])
+      @insight = current_user.ai_insights.find(params[:id])
     end
 
     def create
@@ -16,7 +16,7 @@ module Ai
       end
 
       kind = params[:kind].presence_in(AiInsight.kinds.keys) || "journal"
-      insight = AiInsight.create!(kind: kind, status: :queued, period_end: Date.current)
+      insight = current_user.ai_insights.create!(kind: kind, status: :queued, period_end: Date.current)
       AiInsightJob.perform_later(insight.id, current_account.id)
       redirect_to ai_insights_path, notice: "Đang phân tích… làm mới trang sau vài giây."
     end

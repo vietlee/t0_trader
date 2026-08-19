@@ -1,0 +1,9 @@
+<% if resource.errors.any? %>
+  <div class="flash flash-alert" style="margin-bottom:16px">
+    <ul style="margin:0; padding-left:18px">
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
