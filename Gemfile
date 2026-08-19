@@ -26,7 +26,7 @@ gem "devise"
 gem "sidekiq"
 gem "sidekiq-cron"
 # connection_pool 3.x đổi API, chưa tương thích redis cache store — giữ 2.5.x
-gem "connection_pool", "~> 2.5"
+gem "connection_pool", "~> 3.0"
 
 # Charts + time bucketing for reports
 gem "chartkick"
