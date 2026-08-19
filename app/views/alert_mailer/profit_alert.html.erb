@@ -9,7 +9,7 @@
           <span style="color:#f3f7fc;font-size:16px;font-weight:bold;vertical-align:middle;margin-left:8px;">T0 Trader</span>
         </td></tr>
         <tr><td style="padding:24px 26px 8px;">
-          <div style="color:#f3f7fc;font-size:18px;font-weight:bold;">🔔 Cảnh báo biến động vượt ngưỡng <%= @threshold.to_i %>%</div>
+          <div style="color:#f3f7fc;font-size:18px;font-weight:bold;">Cảnh báo biến động vượt ngưỡng <%= @threshold.to_i %>%</div>
           <div style="color:#8595b4;font-size:13px;margin-top:6px;">Các mã đang giữ đã đạt mức lời/lỗ đáng chú ý so với giá vốn:</div>
         </td></tr>
         <tr><td style="padding:8px 26px 20px;">
@@ -31,14 +31,14 @@
                   <td align="right" style="padding-top:4px;">Lãi/lỗ: <b style="color:<%= up ? '#6ee7b7' : '#fda4b4' %>;"><%= number_with_delimiter(a[:unrealized].to_i, delimiter: '.') %>đ</b></td>
                 </tr></table>
                 <div style="margin-top:8px;color:<%= up ? '#6ee7b7' : '#fda4b4' %>;font-size:13px;font-weight:bold;">
-                  <%= up ? '📈 Cân nhắc chốt lời để không bỏ lỡ' : '📉 Cân nhắc cắt lỗ / xem lại vị thế' %>
+                  <%= up ? 'Cân nhắc chốt lời để không bỏ lỡ' : 'Cân nhắc cắt lỗ / xem lại vị thế' %>
                 </div>
               </td></tr>
             </table>
           <% end %>
         </td></tr>
-        <tr><td style="padding:0 26px 26px;">
-          <a href="https://stock.czin.net/positions" style="display:inline-block;background:#10b981;color:#03110b;text-decoration:none;font-weight:bold;padding:11px 20px;border-radius:10px;font-size:14px;">Mở danh mục →</a>
+        <tr><td style="padding:4px 26px 24px;font-size:14px;color:#9fb0cc;">
+          Xem chi tiết danh mục tại: <a href="https://stock.czin.net/positions" style="color:#6ee7b7;">stock.czin.net/positions</a>
         </td></tr>
         <tr><td style="padding:16px 26px;border-top:1px solid #232a3d;color:#5b6784;font-size:11px;">
           Đây là cảnh báo tự động dựa trên dữ liệu của bạn, không phải khuyến nghị đầu tư. Tắt cảnh báo trong Cài đặt.

@@ -8,10 +8,13 @@ class AlertMailer < ApplicationMailer
     @threshold = user.alert_threshold_pct
     subject = if alerts.size == 1
       a = alerts.first
-      "#{a[:direction] == 'profit' ? '📈' : '📉'} #{a[:stock].symbol} #{format('%+.2f', a[:pct])}% — T0 Trader"
+      "#{a[:stock].symbol} #{format('%+.2f', a[:pct])}% so với giá vốn — T0 Trader"
     else
-      "🔔 #{alerts.size} mã vượt ngưỡng #{@threshold.to_i}% — T0 Trader"
+      "#{alerts.size} mã vượt ngưỡng #{@threshold.to_i}% giá vốn — T0 Trader"
     end
+    # Tín hiệu transactional để Gmail ưu tiên Primary (không phải Promotions).
+    headers["X-Entity-Ref-ID"] = "t0trader-alert-#{Time.current.to_i}"
+    headers["Auto-Submitted"] = "auto-generated"
     mail(to: user.email, subject: subject)
   end
 end
