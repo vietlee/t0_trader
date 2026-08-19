@@ -31,6 +31,7 @@ module Ai
       Anthropic::Client.chat(
         system: SYSTEM,
         messages: [{ role: "user", content: user_prompt }],
+        model: account.user.ai_model,
         max_tokens: 1800
       )
     end

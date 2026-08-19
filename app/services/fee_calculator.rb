@@ -1,7 +1,13 @@
-# Tính phí giao dịch + thuế bán theo biểu phí VNDirect (chỉnh trong Settings).
+# Tính phí giao dịch + thuế bán theo biểu phí (mỗi user chỉnh trong Settings).
 class FeeCalculator
-  # side: "buy"/"sell" (hoặc symbol). Trả về { fee:, tax:, gross: } (VND, làm tròn).
-  def self.for(side:, quantity:, price:, rates: Setting.fee_rates)
+  DEFAULT_RATES = {
+    buy_fee_rate:  User::SETTING_DEFAULTS["buy_fee_rate"],
+    sell_fee_rate: User::SETTING_DEFAULTS["sell_fee_rate"],
+    sell_tax_rate: User::SETTING_DEFAULTS["sell_tax_rate"]
+  }.freeze
+
+  # side: "buy"/"sell". Trả về { fee:, tax:, gross: } (VND, làm tròn).
+  def self.for(side:, quantity:, price:, rates: DEFAULT_RATES)
     gross = quantity.to_i * price.to_d
     side = side.to_s
 

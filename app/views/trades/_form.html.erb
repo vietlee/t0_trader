@@ -1,4 +1,4 @@
-<% rates = Setting.fee_rates %>
+<% rates = current_user.fee_rates %>
 <%= form_with model: trade, url: (trade.persisted? ? trade_path(trade) : trades_path), method: (trade.persisted? ? :patch : :post),
       data: { controller: "trade-form",
               trade_form_buy_fee_value: rates[:buy_fee_rate],

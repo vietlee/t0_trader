@@ -5,11 +5,13 @@ class SettingsController < ApplicationController
   end
 
   def update
-    Setting["buy_fee_rate"]  = percent_to_rate(params[:buy_fee_pct])
-    Setting["sell_fee_rate"] = percent_to_rate(params[:sell_fee_pct])
-    Setting["sell_tax_rate"] = percent_to_rate(params[:sell_tax_pct])
-    Setting["ai_model"]      = params[:ai_model].presence || Setting::DEFAULTS["ai_model"]
-    Setting["ai_enabled"]    = params[:ai_enabled] == "1"
+    current_user.update_preferences(
+      "buy_fee_rate"  => percent_to_rate(params[:buy_fee_pct]),
+      "sell_fee_rate" => percent_to_rate(params[:sell_fee_pct]),
+      "sell_tax_rate" => percent_to_rate(params[:sell_tax_pct]),
+      "ai_model"      => params[:ai_model].presence || User::SETTING_DEFAULTS["ai_model"],
+      "ai_enabled"    => params[:ai_enabled] == "1"
+    )
     redirect_to settings_path, notice: "Đã lưu cài đặt."
   end
 

@@ -13,15 +13,15 @@
         <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr">
           <div>
             <label class="form-label">Phí mua (%)</label>
-            <%= number_field_tag :buy_fee_pct, (Setting["buy_fee_rate"].to_f * 100).round(4), step: "any", class: "form-input" %>
+            <%= number_field_tag :buy_fee_pct, (current_user.pref("buy_fee_rate").to_f * 100).round(4), step: "any", class: "form-input" %>
           </div>
           <div>
             <label class="form-label">Phí bán (%)</label>
-            <%= number_field_tag :sell_fee_pct, (Setting["sell_fee_rate"].to_f * 100).round(4), step: "any", class: "form-input" %>
+            <%= number_field_tag :sell_fee_pct, (current_user.pref("sell_fee_rate").to_f * 100).round(4), step: "any", class: "form-input" %>
           </div>
           <div>
             <label class="form-label">Thuế bán (%)</label>
-            <%= number_field_tag :sell_tax_pct, (Setting["sell_tax_rate"].to_f * 100).round(4), step: "any", class: "form-input" %>
+            <%= number_field_tag :sell_tax_pct, (current_user.pref("sell_tax_rate").to_f * 100).round(4), step: "any", class: "form-input" %>
           </div>
         </div>
 
@@ -33,10 +33,10 @@
                   ["Claude Sonnet 5 (khuyên dùng)", "claude-sonnet-5"],
                   ["Claude Opus 5 (mạnh nhất)", "claude-opus-5"],
                   ["Claude Haiku 4.5 (nhanh, rẻ)", "claude-haiku-4-5-20251001"]
-                ], Setting["ai_model"]), class: "form-select" %>
+                ], current_user.ai_model), class: "form-select" %>
           </div>
           <label class="flex items-center gap-2" style="cursor:pointer">
-            <%= check_box_tag :ai_enabled, "1", Setting["ai_enabled"] %>
+            <%= check_box_tag :ai_enabled, "1", current_user.ai_enabled? %>
             <span style="font-size:14px;color:#c7d3e8">Bật tính năng AI</span>
           </label>
         </div>

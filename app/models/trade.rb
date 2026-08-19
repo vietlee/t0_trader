@@ -64,7 +64,8 @@ class Trade < ApplicationRecord
   def auto_fill_costs
     return if quantity.to_i <= 0 || price.to_d <= 0
 
-    computed = FeeCalculator.for(side: side, quantity: quantity, price: price)
+    rates = account&.user&.fee_rates || FeeCalculator::DEFAULT_RATES
+    computed = FeeCalculator.for(side: side, quantity: quantity, price: price, rates: rates)
     self.fee = computed[:fee] if fee.blank? || fee.to_d.zero?
     self.tax = computed[:tax] if tax.blank? || tax.to_d.zero?
   end

@@ -19,7 +19,7 @@ module Anthropic
     end
 
     def self.model
-      Setting["ai_model"].presence || DEFAULT_MODEL
+      DEFAULT_MODEL
     end
 
     # messages: [{ role: "user"/"assistant", content: "..." }]

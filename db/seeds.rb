@@ -33,9 +33,6 @@ end
 
 account = user.accounts.first_or_create!(name: "Danh mục chính", broker: "VNDirect")
 
-# ---- Cấu hình mặc định -----------------------------------------------------
-Setting.reset_cache!
-
 # ---- Dữ liệu mẫu (chỉ khi SEED_SAMPLE=1 hoặc môi trường development) --------
 if ENV["SEED_SAMPLE"] == "1" || (Rails.env.development? && account.trades.none?)
   puts "Nạp dữ liệu mẫu..."

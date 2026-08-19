@@ -8,6 +8,42 @@ class User < ApplicationRecord
 
   after_create :ensure_primary_account
 
+  # Cấu hình riêng của từng user (biểu phí, model AI). Lưu trong jsonb `preferences`.
+  SETTING_DEFAULTS = {
+    "buy_fee_rate"  => 0.0015,  # 0.15%
+    "sell_fee_rate" => 0.0015,  # 0.15%
+    "sell_tax_rate" => 0.0010,  # 0.10%
+    "ai_model"      => "claude-sonnet-5",
+    "ai_enabled"    => true
+  }.freeze
+
+  def pref(key)
+    key = key.to_s
+    prefs = preferences || {}
+    prefs.key?(key) ? prefs[key] : SETTING_DEFAULTS[key]
+  end
+
+  def fee_rates
+    {
+      buy_fee_rate:  pref("buy_fee_rate").to_f,
+      sell_fee_rate: pref("sell_fee_rate").to_f,
+      sell_tax_rate: pref("sell_tax_rate").to_f
+    }
+  end
+
+  def ai_model
+    pref("ai_model").presence || SETTING_DEFAULTS["ai_model"]
+  end
+
+  def ai_enabled?
+    !!pref("ai_enabled")
+  end
+
+  def update_preferences(hash)
+    self.preferences = (preferences || {}).merge(hash.stringify_keys)
+    save!
+  end
+
   # Single-account-per-user (mỗi user 1 danh mục chính).
   def primary_account
     accounts.order(:id).first

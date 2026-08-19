@@ -8,7 +8,7 @@ class AiInsightJob < ApplicationJob
 
     insight.update!(status: :processing)
     content = Ai::JournalAnalyzer.call(account, kind: insight.kind)
-    insight.update!(content: content, status: :done, ai_model: Anthropic::Client.model)
+    insight.update!(content: content, status: :done, ai_model: account.user.ai_model)
   rescue => e
     insight&.update(status: :failed, content: "Lỗi khi phân tích: #{e.message}")
     Rails.logger.error("AiInsightJob failed: #{e.class} #{e.message}")

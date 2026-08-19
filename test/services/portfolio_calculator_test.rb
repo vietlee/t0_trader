@@ -3,12 +3,9 @@ require "test_helper"
 class PortfolioCalculatorTest < ActiveSupport::TestCase
   setup do
     TradingHoliday.delete_all
-    # Tắt phí để kiểm tra phần lõi math
-    Setting["buy_fee_rate"] = 0
-    Setting["sell_fee_rate"] = 0
-    Setting["sell_tax_rate"] = 0
-
     @user = User.create!(email: "t@example.com", password: "password123")
+    # Tắt phí để kiểm tra phần lõi math
+    @user.update_preferences("buy_fee_rate" => 0, "sell_fee_rate" => 0, "sell_tax_rate" => 0)
     @account = @user.accounts.create!(name: "Test")
     @fpt = Stock.create!(symbol: "FPT", current_price: 130_000)
     @account.cash_flows.create!(kind: :deposit, amount: 500_000_000, occurred_on: Date.current - 30)

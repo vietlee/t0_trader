@@ -18,7 +18,7 @@ module Ai
       context = PortfolioContext.build(account)
       system = "#{SYSTEM}\n\n=== DỮ LIỆU DANH MỤC HIỆN TẠI ===\n#{context}"
       messages = history.map { |m| { role: m.role, content: m.content } }
-      Anthropic::Client.chat(system: system, messages: messages, max_tokens: 1200)
+      Anthropic::Client.chat(system: system, messages: messages, model: account.user.ai_model, max_tokens: 1200)
     end
   end
 end
