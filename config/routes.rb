@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     member do
       patch :status
     end
+    collection do
+      post :quick
+    end
   end
 
   resources :stocks do

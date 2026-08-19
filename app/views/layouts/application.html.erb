@@ -2,20 +2,39 @@
 <html lang="vi">
   <head>
     <title><%= content_for(:title) || "T0 Trader" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="T0 Trader">
+    <meta name="theme-color" content="#0b0f1a">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
+    <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+      }
+    </script>
   </head>
 
   <body>
-    <div class="app-shell">
+    <div class="app-shell" data-controller="mobile-nav">
       <%= render "layouts/sidebar" %>
+      <div class="nav-backdrop" data-action="click->mobile-nav#close"></div>
       <main class="main-area">
+        <div class="mobile-topbar">
+          <button type="button" class="hamburger" data-action="mobile-nav#toggle" aria-label="Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <span class="brand-mark" style="width:28px;height:28px;font-size:13px">T0</span>
+          <span style="font-weight:700">T0 Trader</span>
+        </div>
         <% if notice %><div class="flash flash-notice"><%= notice %></div><% end %>
         <% if alert %><div class="flash flash-alert"><%= alert %></div><% end %>
         <%= yield %>

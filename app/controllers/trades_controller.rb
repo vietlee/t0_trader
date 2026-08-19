@@ -18,9 +18,45 @@ class TradesController < ApplicationController
       side: params[:side].presence || :buy,
       status: :pending,
       traded_at: Time.current,
-      quantity: nil, price: nil
+      quantity: nil,
+      price: params[:price].presence
     )
-    @trade.stock = Stock.find_by(id: params[:stock_id]) if params[:stock_id]
+    if params[:symbol].present?
+      @trade.stock = Stock.find_or_initialize_by(symbol: params[:symbol].to_s.strip.upcase)
+    elsif params[:stock_id]
+      @trade.stock = Stock.find_by(id: params[:stock_id])
+    end
+  end
+
+  # Ghi nhanh giao dịch từ mô tả tự nhiên (AI). VD: "đã mua BSR giá 23k".
+  def quick
+    text = params[:text].to_s.strip
+    return redirect_to(trades_path, alert: "Nhập mô tả giao dịch.") if text.blank?
+    unless Anthropic::Client.configured?
+      return redirect_to trades_path, alert: "Chưa cấu hình AI để dùng ghi nhanh."
+    end
+
+    result = Ai::TradeParser.parse(text, user: current_user)
+    unless result.ok
+      return redirect_to trades_path, alert: "Chưa hiểu mô tả: #{result.error}"
+    end
+
+    stock = Stock.find_or_create_by(symbol: result.symbol)
+    label = result.side == "buy" ? "MUA" : "BÁN"
+
+    if result.quantity.to_i.positive?
+      trade = current_account.trades.new(stock: stock, side: result.side, quantity: result.quantity,
+                                         price: result.price, traded_at: Time.current, status: :pending)
+      if trade.save
+        redirect_to trades_path, notice: "✓ Đã ghi #{label} #{helpers.number_with_delimiter(result.quantity, delimiter: '.')} #{stock.symbol} @ #{helpers.number_with_delimiter(result.price, delimiter: '.')}đ."
+      else
+        redirect_to new_trade_path(side: result.side, symbol: result.symbol, price: result.price),
+                    alert: trade.errors.full_messages.to_sentence
+      end
+    else
+      redirect_to new_trade_path(side: result.side, symbol: result.symbol, price: result.price),
+                  notice: "Đã nhận diện #{label} #{stock.symbol} @ #{helpers.number_with_delimiter(result.price, delimiter: '.')}đ — nhập khối lượng để hoàn tất."
+    end
   end
 
   def create

@@ -10,6 +10,16 @@
   <% end %>
 </div>
 
+<div class="card mb-4" style="background:linear-gradient(180deg, rgba(99,102,241,.1), rgba(15,20,32,.9)); border-color:rgba(99,102,241,.28)">
+  <%= form_with url: quick_trades_path, method: :post, class: "flex gap-2 items-center flex-wrap" do %>
+    <span style="font-size:18px">✦</span>
+    <%= text_field_tag :text, nil, class: "form-input", style: "flex:1;min-width:220px",
+          placeholder: 'Ghi nhanh bằng lời: "đã mua BSR giá 23k" · "bán 2000 HPG giá 27"', autocomplete: "off" %>
+    <%= submit_tag "Ghi bằng AI", class: "btn btn-primary" %>
+  <% end %>
+  <div class="form-hint mt-2">AI tự nhận diện mua/bán, mã và giá. Thiếu khối lượng sẽ mở form điền nốt.</div>
+</div>
+
 <div class="card mb-4">
   <%= form_with url: trades_path, method: :get, data: { turbo_frame: "_top" } do %>
     <div class="grid gap-3" style="grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr auto; align-items:end;">
@@ -76,7 +86,11 @@
                 <% end %>
               </td>
               <td style="white-space:nowrap">
-                <%= link_to "Sửa", edit_trade_path(t), class: "btn btn-ghost btn-sm" %>
+                <div class="flex gap-1">
+                  <%= link_to "Sửa", edit_trade_path(t), class: "btn btn-ghost btn-sm" %>
+                  <%= button_to "Xoá", trade_path(t), method: :delete, class: "btn btn-danger btn-sm",
+                        form: { data: { turbo_confirm: "Xoá giao dịch #{t.side_buy? ? 'MUA' : 'BÁN'} #{t.stock.symbol} (#{number_with_delimiter(t.quantity, delimiter: '.')} CP)? Không thể hoàn tác." } } %>
+                </div>
               </td>
             </tr>
           <% end %>

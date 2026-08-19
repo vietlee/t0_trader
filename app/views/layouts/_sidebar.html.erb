@@ -26,7 +26,7 @@
     <span class="nav-icon"><%= ico.call('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>') %></span>
     <span style="overflow:hidden;text-overflow:ellipsis"><%= current_user.email %></span>
   <% end %>
-  <%= button_to destroy_user_session_path, method: :delete, class: "nav-link", style: "width:100%; background:none; border:none; text-align:left; cursor:pointer;" do %>
+  <%= button_to destroy_user_session_path, method: :delete, class: "nav-link", style: "width:100%; background:none; border:none; text-align:left; cursor:pointer;", form: { data: { turbo_confirm: "Bạn muốn đăng xuất khỏi T0 Trader?" } } do %>
     <span class="nav-icon"><%= ico.call('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>') %></span>
     <span>Đăng xuất</span>
   <% end %>

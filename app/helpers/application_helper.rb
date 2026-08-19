@@ -7,22 +7,13 @@ module ApplicationHelper
     unit.present? ? "#{n} #{unit}".html_safe : n
   end
 
-  # Rút gọn: 1,2 tỷ / 345 tr / 12 ng
+  # Số tiền đầy đủ có dấu chấm ngăn nghìn (vd 1.700.000). Kèm "đ".
   def vnd_short(amount)
     return "—" if amount.nil?
 
     v = amount.to_d
-    abs = v.abs
     sign = v.negative? ? "-" : ""
-    if abs >= 1_000_000_000
-      "#{sign}#{number_with_precision(abs / 1_000_000_000.0, precision: 2, strip_insignificant_zeros: true)} tỷ"
-    elsif abs >= 1_000_000
-      "#{sign}#{number_with_precision(abs / 1_000_000.0, precision: 1, strip_insignificant_zeros: true)} tr"
-    elsif abs >= 1_000
-      "#{sign}#{number_with_precision(abs / 1_000.0, precision: 0)} ng"
-    else
-      "#{sign}#{number_with_delimiter(abs.round(0).to_i, delimiter: ".")}"
-    end
+    "#{sign}#{number_with_delimiter(v.abs.round(0).to_i, delimiter: ".")} đ"
   end
 
   # Màu theo dấu (lời xanh / lỗ đỏ / hoà xám)

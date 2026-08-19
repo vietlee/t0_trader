@@ -15,12 +15,18 @@ module MarkdownHelper
     text.to_s.each_line do |raw|
       line = raw.chomp
       case line
+      when /\A\s*(?:---+|\*\*\*+|___+)\s*\z/ # đường kẻ ngang
+        close_lists.call
+        html << "<hr class='md-hr'>"
       when /\A\s*#{'#'}{3,}\s+(.*)/ # ### heading
         close_lists.call
         html << "<h4 class='md-h'>#{inline(Regexp.last_match(1))}</h4>"
       when /\A\s*#{'#'}{1,2}\s+(.*)/ # # / ## heading
         close_lists.call
         html << "<h3 class='md-h'>#{inline(Regexp.last_match(1))}</h3>"
+      when /\A\s*>\s?(.*)/ # blockquote
+        close_lists.call
+        html << "<blockquote class='md-quote'>#{inline(Regexp.last_match(1))}</blockquote>"
       when /\A\s*[-*]\s+(.*)/ # bullet
         unless list_open then close_lists.call; html << "<ul class='md-ul'>"; list_open = true end
         html << "<li>#{inline(Regexp.last_match(1))}</li>"
