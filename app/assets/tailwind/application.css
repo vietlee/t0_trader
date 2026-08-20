@@ -177,6 +177,13 @@
 .confirm-msg { font-size:14px; color:#c7d3e8; line-height:1.6; margin-bottom:20px; }
 .confirm-actions { display:flex; gap:10px; justify-content:flex-end; }
 
+/* ============ APP LOADING OVERLAY ============ */
+.app-loading { position:fixed; inset:0; z-index:9998; display:none; align-items:center; justify-content:center; background:rgba(3,6,12,.72); backdrop-filter:blur(4px); }
+.app-loading.show { display:flex; }
+.app-loading-box { display:flex; flex-direction:column; align-items:center; gap:16px; padding:28px 34px; background:linear-gradient(180deg,#1a2133,#12172490); border:1px solid rgba(255,255,255,.1); border-radius:18px; box-shadow:0 30px 80px -30px rgba(0,0,0,.9); }
+.app-loading-text { font-size:14px; color:#c7d3e8; font-weight:600; }
+.spinner-lg { width:40px; height:40px; border-radius:50%; border:4px solid rgba(16,185,129,.22); border-top-color:#10b981; animation:spin .8s linear infinite; }
+
 /* ============ TOGGLE SWITCH ============ */
 .switch { width:42px; height:23px; border-radius:999px; background:rgba(255,255,255,.14); border:none; cursor:pointer; padding:2px; display:inline-flex; align-items:center; transition:background .15s; }
 .switch-on { background:#10b981; }

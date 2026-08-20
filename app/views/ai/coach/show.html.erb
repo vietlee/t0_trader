@@ -36,7 +36,7 @@
   </div>
 
   <div class="coach-input-row">
-    <%= form_with url: ai_coach_message_path, method: :post, class: "flex gap-3", data: { turbo: false, action: "submit->coach#submit" } do %>
+    <%= form_with url: ai_coach_message_path, method: :post, class: "flex gap-3", data: { turbo: false, no_loading: true, action: "submit->coach#submit" } do %>
       <%= text_field_tag :content, nil, id: "coach-input", class: "form-input", placeholder: "Nhập câu hỏi về danh mục của bạn…", autofocus: true, disabled: !@configured, autocomplete: "off", data: { coach_target: "input" } %>
       <%= submit_tag "Gửi", class: "btn btn-primary", disabled: !@configured, data: { coach_target: "send" } %>
     <% end %>
