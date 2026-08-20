@@ -17,4 +17,14 @@ class AlertMailer < ApplicationMailer
     headers["Auto-Submitted"] = "auto-generated"
     mail(to: user.email, subject: subject)
   end
+
+  # Thông báo chung (SL/TP chạm mức, watchlist về vùng mua).
+  # items: mảng { symbol:, name:, line:, color: }
+  def notify(user, subject, heading, items)
+    @heading = heading
+    @items = items
+    headers["X-Entity-Ref-ID"] = "t0trader-notify-#{Time.current.to_i}"
+    headers["Auto-Submitted"] = "auto-generated"
+    mail(to: user.email, subject: subject)
+  end
 end

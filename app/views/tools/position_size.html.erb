@@ -1,0 +1,76 @@
+<% content_for :title, "Tính khối lượng · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Tính khối lượng theo rủi ro</div>
+    <div class="page-sub">Chỉ mạo hiểm một phần nhỏ vốn mỗi lệnh — chìa khoá sống sót & lãi kép dài hạn.</div>
+  </div>
+  <%= link_to "← Vị thế", positions_path, class: "btn btn-ghost" %>
+</div>
+
+<div class="grid gap-5" style="grid-template-columns: 1fr 1fr;" data-controller="position-size">
+  <div class="card">
+    <div class="card-title mb-3">Thông số</div>
+    <div data-position-size-target="nav" data-nav="<%= @nav %>" style="display:none"></div>
+    <div class="form-row" style="grid-template-columns: 1fr 1fr">
+      <div>
+        <label class="form-label">Vốn dùng để tính (đ)</label>
+        <%= text_field_tag :capital, @nav, inputmode: "numeric", class: "form-input",
+              data: { controller: "numeric-input", position_size_target: "capital", action: "input->numeric-input#format input->position-size#calc" } %>
+        <div class="form-hint">Mặc định = NAV. Có thể đổi thành tiền mặt khả dụng.</div>
+      </div>
+      <div>
+        <label class="form-label">% rủi ro mỗi lệnh</label>
+        <%= number_field_tag :risk, @risk_pct, step: "0.5", class: "form-input",
+              data: { position_size_target: "risk", action: "input->position-size#calc" } %>
+        <div class="form-hint">Khuyến nghị 1–2%.</div>
+      </div>
+    </div>
+    <div class="form-row mt-4" style="grid-template-columns: 1fr 1fr">
+      <div>
+        <label class="form-label">Giá vào (đ/CP)</label>
+        <%= text_field_tag :entry, nil, inputmode: "numeric", class: "form-input", placeholder: "27.000",
+              data: { controller: "numeric-input", position_size_target: "entry", action: "input->numeric-input#format input->position-size#calc" } %>
+      </div>
+      <div>
+        <label class="form-label">Giá cắt lỗ (đ/CP)</label>
+        <%= text_field_tag :stop, nil, inputmode: "numeric", class: "form-input", placeholder: "25.500",
+              data: { controller: "numeric-input", position_size_target: "stop", action: "input->numeric-input#format input->position-size#calc" } %>
+      </div>
+    </div>
+    <div class="form-hint mt-3" style="color:#fda4b4;display:none" data-position-size-target="warn"></div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(180deg, rgba(16,185,129,.1), rgba(15,20,32,.9)); border-color:rgba(16,185,129,.25)">
+    <div class="card-title mb-3">Gợi ý</div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div>
+        <div class="kpi-label">Số tiền tối đa được phép lỗ</div>
+        <div style="font-size:22px;font-weight:750;color:#fda4b4" data-position-size-target="riskAmount">0 đ</div>
+      </div>
+      <div>
+        <div class="kpi-label">Khối lượng nên mua</div>
+        <div style="font-size:28px;font-weight:800;color:#6ee7b7" data-position-size-target="shares">—</div>
+        <div class="form-hint">Làm tròn lô 100 CP.</div>
+      </div>
+      <div class="flex gap-6">
+        <div>
+          <div class="kpi-label">Giá trị lệnh</div>
+          <div style="font-size:16px;font-weight:700" data-position-size-target="orderValue">0 đ</div>
+        </div>
+        <div>
+          <div class="kpi-label">Tỷ trọng</div>
+          <div style="font-size:16px;font-weight:700" data-position-size-target="navPct">0% NAV</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-5" style="max-width:720px">
+  <div class="card-title mb-2">Vì sao quan trọng?</div>
+  <div style="font-size:13.5px;color:#c7d3e8;line-height:1.65">
+    Chỉ rủi ro <b>1–2% vốn/lệnh</b> nghĩa là kể cả chuỗi 5–10 lệnh thua liên tiếp bạn vẫn còn phần lớn vốn để gỡ.
+    Ngược lại, vào lệnh quá tay chỉ cần vài lệnh sai là mất khả năng hồi phục. Kích thước vị thế đúng
+    <b>quan trọng hơn cả việc chọn đúng mã</b>.
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#0b0f1a;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f1a;padding:24px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#151b2b;border-radius:16px;border:1px solid #232a3d;overflow:hidden;">
+        <tr><td style="padding:22px 26px;border-bottom:1px solid #232a3d;">
+          <span style="display:inline-block;width:30px;height:30px;background:#10b981;border-radius:8px;color:#04120c;font-weight:bold;text-align:center;line-height:30px;font-size:13px;">T0</span>
+          <span style="color:#f3f7fc;font-size:16px;font-weight:bold;vertical-align:middle;margin-left:8px;">T0 Trader</span>
+        </td></tr>
+        <tr><td style="padding:22px 26px 6px;">
+          <div style="color:#f3f7fc;font-size:18px;font-weight:bold;"><%= @heading %></div>
+        </td></tr>
+        <tr><td style="padding:6px 26px 18px;">
+          <% @items.each do |it| %>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f1420;border:1px solid #232a3d;border-radius:12px;margin-top:10px;">
+              <tr><td style="padding:13px 16px;">
+                <span style="color:#f3f7fc;font-size:16px;font-weight:bold;"><%= it[:symbol] %></span>
+                <span style="color:#7182a3;font-size:12px;"><%= it[:name] %></span>
+                <div style="margin-top:5px;color:<%= it[:color] || '#c7d3e8' %>;font-size:14px;"><%= it[:line] %></div>
+              </td></tr>
+            </table>
+          <% end %>
+        </td></tr>
+        <tr><td style="padding:2px 26px 22px;font-size:14px;color:#9fb0cc;">
+          Xem chi tiết: <a href="https://stock.czin.net/positions" style="color:#6ee7b7;">stock.czin.net</a>
+        </td></tr>
+        <tr><td style="padding:16px 26px;border-top:1px solid #232a3d;color:#5b6784;font-size:11px;">
+          Cảnh báo tự động dựa trên dữ liệu của bạn, không phải khuyến nghị đầu tư. Tắt cảnh báo trong Cài đặt.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

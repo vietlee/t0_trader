@@ -177,6 +177,12 @@
 .confirm-msg { font-size:14px; color:#c7d3e8; line-height:1.6; margin-bottom:20px; }
 .confirm-actions { display:flex; gap:10px; justify-content:flex-end; }
 
+/* ============ SL/TP ROWS ============ */
+.sltp-row { display:flex; gap:12px; align-items:end; flex-wrap:wrap; margin:0; padding:12px 14px; background:rgba(7,10,18,.4); border:1px solid rgba(255,255,255,.06); border-radius:12px; }
+.sltp-sym { flex:1; min-width:150px; display:flex; flex-direction:column; gap:3px; }
+.sltp-field { width:132px; }
+@media (max-width: 640px) { .sltp-field { flex:1; width:auto; } }
+
 /* ============ QUICK AI FORM (responsive) ============ */
 .quick-ai-form { display:flex; gap:10px; align-items:center; }
 .quick-ai-form .form-input { flex:1; min-width:0; }

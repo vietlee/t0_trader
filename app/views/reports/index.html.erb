@@ -13,6 +13,26 @@
   <div class="card kpi"><div class="kpi-label">Profit factor</div><div class="kpi-value"><%= @stats[:profit_factor] %></div><div class="kpi-sub">TB thắng <%= vnd_short(@stats[:avg_win]) %> · TB thua <%= vnd_short(@stats[:avg_loss]) %></div></div>
 </div>
 
+<div class="kpi-grid mb-5">
+  <div class="card kpi"><div class="kpi-label">Tỷ lệ thắng</div><div class="kpi-value"><%= number_with_precision(@stats[:win_rate], precision: 1) %>%</div><div class="kpi-sub"><%= @stats[:win_count] %> thắng / <%= @stats[:loss_count] %> thua</div></div>
+  <div class="card kpi"><div class="kpi-label">Kỳ vọng / lệnh</div><div class="kpi-value <%= pnl_color(@expectancy) %>"><%= @expectancy >= 0 ? "+" : "" %><%= vnd_short(@expectancy) %></div><div class="kpi-sub">TB lời/lỗ mỗi lệnh đóng</div></div>
+  <div class="card kpi"><div class="kpi-label">Sụt giảm tối đa (drawdown)</div><div class="kpi-value text-rose-400"><%= vnd_short(@max_drawdown) %></div><div class="kpi-sub"><%= @max_drawdown_pct %>% từ đỉnh</div></div>
+  <div class="card kpi"><div class="kpi-label">Thời gian giữ TB</div><div class="kpi-value" style="font-size:19px"><span style="color:#6ee7b7"><%= @avg_hold_win || "—" %></span> / <span style="color:#fda4b4"><%= @avg_hold_loss || "—" %></span> <span style="font-size:13px;color:#8595b4">ngày</span></div><div class="kpi-sub">Lệnh thắng / lệnh thua</div></div>
+</div>
+
+<div class="card mb-5">
+  <div class="card-header"><div class="card-title">Lịch lời/lỗ (heatmap)</div><span class="chip">Xanh = ngày lời · Đỏ = ngày lỗ</span></div>
+  <% if @daily_pnl.any? %>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <% @calendar_months.each do |month_start| %>
+        <%= render "calendar", month_start: month_start, daily_pnl: @daily_pnl %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">Chưa có lệnh đã đóng để vẽ lịch.</div>
+  <% end %>
+</div>
+
 <div class="grid gap-5 mb-5" style="grid-template-columns: 1.5fr 1fr">
   <div class="card">
     <div class="card-header"><div class="card-title">Lời/lỗ đã hiện thực theo tháng</div></div>

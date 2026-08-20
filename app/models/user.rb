@@ -17,7 +17,10 @@ class User < ApplicationRecord
     "ai_model"           => "claude-sonnet-5",
     "ai_enabled"         => true,
     "alert_enabled"      => false,   # bật email cảnh báo
-    "alert_threshold_pct" => 5.0     # ngưỡng % lời/lỗ để cảnh báo
+    "alert_threshold_pct" => 5.0,    # ngưỡng % lời/lỗ để cảnh báo
+    "risk_per_trade_pct" => 2.0,     # % vốn rủi ro mỗi lệnh (position sizing)
+    "max_position_pct"   => 20.0,    # cảnh báo khi 1 mã > % NAV
+    "max_daily_trades"   => 0        # chặn overtrading (0 = tắt)
   }.freeze
 
   def pref(key)
@@ -49,6 +52,10 @@ class User < ApplicationRecord
   def alert_threshold_pct
     pref("alert_threshold_pct").to_f
   end
+
+  def risk_per_trade_pct = pref("risk_per_trade_pct").to_f
+  def max_position_pct   = pref("max_position_pct").to_f
+  def max_daily_trades   = pref("max_daily_trades").to_i
 
   def update_preferences(hash)
     self.preferences = (preferences || {}).merge(hash.stringify_keys)

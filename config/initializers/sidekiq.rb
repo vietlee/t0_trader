@@ -7,11 +7,11 @@ Sidekiq.configure_server do |config|
   config.on(:startup) do
     schedule = {
       "fetch_stock_prices" => {
-        "cron"  => "*/15 9-15 * * 1-5 Asia/Ho_Chi_Minh", # trong giờ giao dịch
+        "cron"  => "*/5 9-15 * * 1-5 Asia/Ho_Chi_Minh", # mỗi 5' trong giờ giao dịch
         "class" => "FetchStockPricesJob"
       },
       "check_price_alerts" => {
-        "cron"  => "5,20,35,50 9-15 * * 1-5 Asia/Ho_Chi_Minh",
+        "cron"  => "3-59/5 9-15 * * 1-5 Asia/Ho_Chi_Minh", # 2' sau mỗi lần lấy giá
         "class" => "CheckPriceAlertsJob"
       }
     }

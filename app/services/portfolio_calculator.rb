@@ -95,6 +95,27 @@ class PortfolioCalculator
     }
   end
 
+  # Kỳ vọng lợi nhuận trung bình mỗi lệnh đóng (VND).
+  def expectancy
+    c = closed_trades
+    c.any? ? (c.sum { |t| t[:pnl] } / c.size).round(0) : 0
+  end
+
+  # Sụt giảm tối đa (đỉnh-đáy) trên đường vốn realized, trả về [amount_âm, pct_âm].
+  def max_drawdown
+    running = 0.to_d
+    peak = 0.to_d
+    max_dd = 0.to_d
+    realized_events.sort_by(&:date).each do |e|
+      running += e.pnl
+      peak = running if running > peak
+      dd = running - peak
+      max_dd = dd if dd < max_dd
+    end
+    pct = peak.positive? ? (max_dd / peak * 100).round(1) : 0
+    [max_dd.round(0), pct]
+  end
+
   # ---- Panel T+0 ---------------------------------------------------------
   # Mỗi mã: bán được bao nhiêu hôm nay, còn bao nhiêu đang về (kèm ngày).
   def t0_rows

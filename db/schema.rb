@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_19_133111) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_19_152921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_133111) do
     t.index ["occurred_on"], name: "index_cash_flows_on_occurred_on"
   end
 
+  create_table "risk_targets", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "stock_id", null: false
+    t.decimal "stop_loss", precision: 15, scale: 2
+    t.decimal "take_profit", precision: 15, scale: 2
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "stock_id"], name: "index_risk_targets_on_account_id_and_stock_id", unique: true
+    t.index ["account_id"], name: "index_risk_targets_on_account_id"
+    t.index ["stock_id"], name: "index_risk_targets_on_stock_id"
+  end
+
   create_table "stocks", force: :cascade do |t|
     t.string "symbol", null: false
     t.string "name"
@@ -130,12 +143,28 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_133111) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "watchlist_items", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "stock_id", null: false
+    t.decimal "target_buy_price", precision: 15, scale: 2
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "stock_id"], name: "index_watchlist_items_on_account_id_and_stock_id", unique: true
+    t.index ["account_id"], name: "index_watchlist_items_on_account_id"
+    t.index ["stock_id"], name: "index_watchlist_items_on_stock_id"
+  end
+
   add_foreign_key "accounts", "users"
   add_foreign_key "ai_insights", "users"
   add_foreign_key "ai_messages", "users"
   add_foreign_key "alert_logs", "stocks"
   add_foreign_key "alert_logs", "users"
   add_foreign_key "cash_flows", "accounts"
+  add_foreign_key "risk_targets", "accounts"
+  add_foreign_key "risk_targets", "stocks"
   add_foreign_key "trades", "accounts"
   add_foreign_key "trades", "stocks"
+  add_foreign_key "watchlist_items", "accounts"
+  add_foreign_key "watchlist_items", "stocks"
 end

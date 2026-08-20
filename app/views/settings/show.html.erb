@@ -64,6 +64,25 @@
           <div class="form-hint">VD 5 → khi giá hiện tại chênh ±5% so với giá vốn của mã đang giữ, gửi email nhắc (giờ giao dịch). Cần bật giá tự động.</div>
         </div>
 
+        <div class="card-title mb-3 mt-5">Quản trị rủi ro</div>
+        <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr">
+          <div>
+            <label class="form-label">% rủi ro mỗi lệnh</label>
+            <%= number_field_tag :risk_per_trade_pct, current_user.risk_per_trade_pct, step: "0.5", class: "form-input" %>
+            <div class="form-hint">Dùng cho máy tính khối lượng.</div>
+          </div>
+          <div>
+            <label class="form-label">Ngưỡng tập trung (% NAV)</label>
+            <%= number_field_tag :max_position_pct, current_user.max_position_pct, step: "1", class: "form-input" %>
+            <div class="form-hint">Cảnh báo khi 1 mã vượt %.</div>
+          </div>
+          <div>
+            <label class="form-label">Số lệnh tối đa/ngày</label>
+            <%= number_field_tag :max_daily_trades, current_user.max_daily_trades, step: "1", min: "0", class: "form-input" %>
+            <div class="form-hint">0 = tắt (chống overtrading).</div>
+          </div>
+        </div>
+
         <div class="mt-5"><%= submit_tag "Lưu cài đặt", class: "btn btn-primary" %></div>
       <% end %>
     </div>

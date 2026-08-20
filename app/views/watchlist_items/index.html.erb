@@ -1,0 +1,65 @@
+<% content_for :title, "Watchlist · T0 Trader" %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <div class="page-title">Watchlist — canh mua</div>
+    <div class="page-sub">Theo dõi mã tiềm năng và nhận email khi giá về vùng bạn muốn mua (tránh mua đuổi/FOMO).</div>
+  </div>
+  <%= button_to refresh_stocks_path, class: "btn btn-ghost" do %>Cập nhật giá<% end %>
+</div>
+
+<div class="card mb-5">
+  <div class="card-title mb-3">Thêm mã theo dõi</div>
+  <%= form_with url: watchlist_items_path, method: :post, class: "grid gap-3", data: { turbo: false } do %>
+    <div class="grid gap-3" style="grid-template-columns: 1fr 1fr 1.4fr auto; align-items:end;">
+      <div>
+        <label class="form-label">Mã</label>
+        <%= text_field_tag :symbol, nil, class: "form-input", style: "text-transform:uppercase", placeholder: "FPT", autocomplete: "off" %>
+      </div>
+      <div>
+        <label class="form-label">Giá muốn mua (đ)</label>
+        <%= text_field_tag :target_buy_price, nil, inputmode: "numeric", class: "form-input", placeholder: "120.000", data: { controller: "numeric-input" } %>
+      </div>
+      <div>
+        <label class="form-label">Ghi chú</label>
+        <%= text_field_tag :note, nil, class: "form-input", placeholder: "Lý do quan tâm..." %>
+      </div>
+      <%= submit_tag "Thêm", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card">
+  <% if @items.any? %>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead><tr><th>Mã</th><th class="num">Giá hiện tại</th><th class="num">Giá muốn mua</th><th class="num">Chênh lệch</th><th>Ghi chú</th><th></th></tr></thead>
+        <tbody>
+          <% @items.each do |item| %>
+            <% price = item.stock.current_price %>
+            <% hit = item.target_hit?(price) %>
+            <tr>
+              <td class="sym"><%= item.stock.symbol %><div style="font-size:11px;color:#7182a3;font-weight:400"><%= item.stock.name %></div></td>
+              <td class="num"><%= price ? vnd(price, unit: "") : "—" %></td>
+              <td class="num"><%= item.target_buy_price ? vnd(item.target_buy_price, unit: "") : "—" %></td>
+              <td class="num">
+                <% if price && item.target_buy_price %>
+                  <% diff = ((price - item.target_buy_price) / item.target_buy_price.to_f * 100).round(1) %>
+                  <% if hit %><span class="badge badge-settled">Đã về vùng mua</span>
+                  <% else %><span style="color:#8595b4">còn <%= diff %>%</span><% end %>
+                <% else %>—<% end %>
+              </td>
+              <td style="color:#8595b4"><%= item.note %></td>
+              <td class="flex gap-1">
+                <%= link_to "Mua", new_trade_path(side: "buy", symbol: item.stock.symbol, price: item.target_buy_price&.to_i), class: "btn btn-ghost btn-sm" %>
+                <%= button_to "Xoá", watchlist_item_path(item), method: :delete, class: "btn btn-danger btn-sm",
+                      form: { data: { turbo_confirm: "Xoá #{item.stock.symbol} khỏi watchlist?" } } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="empty-state">Watchlist trống. Thêm mã bạn đang canh mua ở trên.</div>
+  <% end %>
+</div>

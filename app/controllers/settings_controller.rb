@@ -12,7 +12,10 @@ class SettingsController < ApplicationController
       "ai_model"            => params[:ai_model].presence || User::SETTING_DEFAULTS["ai_model"],
       "ai_enabled"          => params[:ai_enabled] == "1",
       "alert_enabled"       => params[:alert_enabled] == "1",
-      "alert_threshold_pct" => params[:alert_threshold_pct].to_f
+      "alert_threshold_pct" => params[:alert_threshold_pct].to_f,
+      "risk_per_trade_pct"  => params[:risk_per_trade_pct].to_f,
+      "max_position_pct"    => params[:max_position_pct].to_f,
+      "max_daily_trades"    => params[:max_daily_trades].to_i
     )
     redirect_to settings_path, notice: "Đã lưu cài đặt."
   end

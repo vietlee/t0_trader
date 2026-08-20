@@ -1,0 +1,28 @@
+<%# locals: month_start (Date đầu tháng), daily_pnl (hash "YYYY-MM-DD" => pnl) %>
+<% first = month_start.beginning_of_month %>
+<% last = month_start.end_of_month %>
+<% offset = (first.wday + 6) % 7 # Thứ 2 = 0 %>
+<% month_vals = (first..last).map { |d| daily_pnl[d.to_s].to_i }.reject(&:zero?) %>
+<% max_abs = (month_vals.map(&:abs).max || 1).to_f %>
+<div style="min-width:230px">
+  <div style="font-weight:700;color:#c7d3e8;margin-bottom:8px;font-size:13.5px"><%= I18n.t("date.month_names")[first.month] rescue first.strftime("Tháng %m") %> <%= first.year %></div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+    <% %w[T2 T3 T4 T5 T6 T7 CN].each do |w| %>
+      <div style="text-align:center;font-size:10px;color:#5b6784"><%= w %></div>
+    <% end %>
+    <% offset.times do %><div></div><% end %>
+    <% (first..last).each do |d| %>
+      <% pnl = daily_pnl[d.to_s].to_i %>
+      <% if pnl.zero? %>
+        <% bg = "rgba(255,255,255,.03)"; col = "#5b6784" %>
+      <% else %>
+        <% alpha = (0.25 + 0.6 * (pnl.abs / max_abs)).round(2) %>
+        <% bg = pnl.positive? ? "rgba(16,185,129,#{alpha})" : "rgba(244,63,94,#{alpha})"; col = "#f3f7fc" %>
+      <% end %>
+      <div title="<%= d.strftime('%d/%m') %>: <%= number_with_delimiter(pnl, delimiter: '.') %>đ"
+           style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:11px;background:<%= bg %>;color:<%= col %>">
+        <%= d.day %>
+      </div>
+    <% end %>
+  </div>
+</div>

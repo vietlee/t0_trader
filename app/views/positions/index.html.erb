@@ -20,6 +20,16 @@
   <div class="card kpi" style="border-color:rgba(245,158,11,.3)"><div class="kpi-label" style="color:#fcd34d">Đang về (T+)</div><div class="kpi-value" style="color:#fcd34d"><%= number_with_delimiter(@total_pending, delimiter: ".") %> <span style="font-size:14px;color:#8595b4">CP</span></div></div>
 </div>
 
+<% if @nav.positive? && @max_position_pct.positive? %>
+  <% concentrated = @positions.select { |p| p.market_value.to_f / @nav * 100 > @max_position_pct } %>
+  <% if concentrated.any? %>
+    <div class="flash flash-alert mb-5">
+      ⚠ <b>Tập trung cao:</b> <%= concentrated.map { |p| "#{p.stock.symbol} #{(p.market_value.to_f / @nav * 100).round(1)}%" }.join(", ") %>
+      vượt ngưỡng <%= @max_position_pct.to_i %>% NAV. Cân nhắc giảm tỷ trọng để phân tán rủi ro.
+    </div>
+  <% end %>
+<% end %>
+
 <% if @positions.any? %>
   <div class="card mb-5">
     <div class="card-header"><div class="card-title">Chi tiết vị thế</div></div>
@@ -68,6 +78,37 @@
         </tbody>
       </table>
     </div>
+  </div>
+
+  <div class="card mb-5">
+    <div class="card-header">
+      <div class="card-title">🎯 Kế hoạch cắt lỗ / chốt lời</div>
+      <%= link_to "Tính khối lượng theo rủi ro →", position_size_tool_path, class: "chip", style: "color:#6ee7b7" %>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <% @positions.each do |pos| %>
+        <% rt = @risk_targets[pos.stock.id] %>
+        <%= form_with url: risk_targets_path, method: :post, class: "sltp-row" do %>
+          <%= hidden_field_tag :stock_id, pos.stock.id %>
+          <div class="sltp-sym">
+            <span class="sym"><%= pos.stock.symbol %></span>
+            <span style="font-size:11px;color:#7182a3">vốn <%= vnd(pos.avg_cost, unit: "") %> · TT <%= pos.market_price ? vnd(pos.market_price, unit: "") : "—" %></span>
+            <% if rt&.stop_hit?(pos.market_price) %><span class="badge badge-cancelled" style="font-size:9px">chạm SL</span>
+            <% elsif rt&.target_hit?(pos.market_price) %><span class="badge badge-settled" style="font-size:9px">chạm TP</span><% end %>
+          </div>
+          <div class="sltp-field">
+            <label class="form-label" style="margin-bottom:3px">Cắt lỗ</label>
+            <%= text_field_tag :stop_loss, rt&.stop_loss&.to_i, inputmode: "numeric", class: "form-input", style: "padding:7px 9px", placeholder: "vd 25.000", data: { controller: "numeric-input" } %>
+          </div>
+          <div class="sltp-field">
+            <label class="form-label" style="margin-bottom:3px">Chốt lời</label>
+            <%= text_field_tag :take_profit, rt&.take_profit&.to_i, inputmode: "numeric", class: "form-input", style: "padding:7px 9px", placeholder: "vd 30.000", data: { controller: "numeric-input" } %>
+          </div>
+          <%= submit_tag "Lưu", class: "btn btn-ghost btn-sm", style: "align-self:end" %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="form-hint mt-2">Đặt SL/TP để hệ thống email nhắc khi giá chạm (cần bật cảnh báo trong Cài đặt + có giá tự động). Để trống cả hai để xoá.</div>
   </div>
 
   <div class="card" style="background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)">

@@ -18,6 +18,13 @@
   </div>
 </div>
 
+<% if @max_daily_trades.to_i.positive? && @trades_today.to_i >= @max_daily_trades %>
+  <div class="flash flash-alert mb-4">⚠ <b>Overtrading:</b> hôm nay đã <%= @trades_today %> lệnh (giới hạn <%= @max_daily_trades %>). Giao dịch quá nhiều thường bào mòn lợi nhuận — cân nhắc dừng lại.</div>
+<% end %>
+<% if @concentrated.present? && @concentrated.any? %>
+  <div class="flash flash-alert mb-4">⚠ <b>Tập trung cao:</b> <%= @concentrated.map { |p| "#{p.stock.symbol} #{(p.market_value.to_f / @p.nav * 100).round(1)}%" }.join(", ") %> vượt <%= @max_position_pct.to_i %>% NAV. <%= link_to "Xem vị thế →", positions_path, style:"color:#fda4b4;text-decoration:underline" %></div>
+<% end %>
+
 <!-- KPI -->
 <div class="kpi-grid mb-5">
   <div class="card kpi">

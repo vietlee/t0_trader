@@ -1,0 +1,9 @@
+T0 TRADER — <%= @heading %>
+
+<% @items.each do |it| -%>
+- <%= it[:symbol] %> (<%= it[:name] %>): <%= it[:line] %>
+<% end -%>
+
+Xem chi tiết: https://stock.czin.net/positions
+
+Cảnh báo tự động dựa trên dữ liệu của bạn, không phải khuyến nghị đầu tư.

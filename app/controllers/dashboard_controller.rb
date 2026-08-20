@@ -20,6 +20,17 @@ class DashboardController < ApplicationController
     @t0_rows = @p.t0_rows
     @equity_curve = @p.equity_curve
 
+    # Chống overtrading + cảnh báo tập trung
+    @max_daily_trades = current_user.max_daily_trades
+    if @max_daily_trades.positive?
+      @trades_today = current_account.trades.executed
+                                     .where(traded_at: Time.current.beginning_of_day..Time.current.end_of_day).count
+    end
+    @max_position_pct = current_user.max_position_pct
+    if @p.nav.positive? && @max_position_pct.positive?
+      @concentrated = @positions.select { |pos| pos.market_value.to_f / @p.nav * 100 > @max_position_pct }
+    end
+
     # Dữ liệu biểu đồ tổng quan
     @allocation = @positions.select { |p| p.market_value.to_i.positive? }
                             .map { |p| [p.stock.symbol, p.market_value.to_i] }
