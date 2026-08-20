@@ -66,7 +66,7 @@
       <div class="card-title">Đường vốn — luỹ kế lời/lỗ đã hiện thực</div>
     </div>
     <% if @equity_curve.any? %>
-      <%= line_chart @equity_curve, height: "260px", colors: ["#10b981"], curve: true, points: false,
+      <%= line_chart @equity_curve, height: "260px", colors: ["#10b981"], curve: true, points: false, suffix: " đ", thousands: ".",
             library: { scales: { x: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } },
                                  y: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#7182a3" } } },
                        plugins: { legend: { display: false } } } %>
@@ -124,7 +124,7 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Phân bổ danh mục theo mã</div></div>
     <% if @allocation.any? %>
-      <%= pie_chart @allocation, donut: true, height: "240px", colors: palette, library: donut_lib, suffix: " đ" %>
+      <%= pie_chart @allocation, donut: true, height: "240px", colors: palette, library: donut_lib, suffix: " đ", thousands: "." %>
       <%= render "donut_breakdown", data: @allocation, colors: palette %>
     <% else %>
       <div class="empty-state">Chưa có cổ phiếu đang giữ.</div>
@@ -134,7 +134,7 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Cơ cấu tài sản</div></div>
     <% if @asset_mix.any? %>
-      <%= pie_chart @asset_mix, donut: true, height: "240px", colors: ["#38bdf8", "#10b981"], library: donut_lib, suffix: " đ" %>
+      <%= pie_chart @asset_mix, donut: true, height: "240px", colors: ["#38bdf8", "#10b981"], library: donut_lib, suffix: " đ", thousands: "." %>
       <%= render "donut_breakdown", data: @asset_mix, colors: ["#38bdf8", "#10b981"] %>
     <% else %>
       <div class="empty-state">Chưa có dữ liệu.</div>
@@ -144,7 +144,7 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Lời/lỗ chưa hiện thực theo mã</div></div>
     <% if @unrealized_by_stock.any? %>
-      <%= column_chart @unrealized_by_stock, height: "280px", colors: ["#6366f1"], library: bar_lib, suffix: " đ" %>
+      <%= column_chart @unrealized_by_stock, height: "280px", colors: ["#6366f1"], library: bar_lib, suffix: " đ", thousands: "." %>
     <% else %>
       <div class="empty-state">Chưa có vị thế có giá thị trường. <%= link_to "Cập nhật giá", stocks_path, style:"color:#6ee7b7" %></div>
     <% end %>
@@ -153,7 +153,7 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Lời/lỗ đã hiện thực theo mã</div></div>
     <% if @realized_by_stock.any? %>
-      <%= column_chart @realized_by_stock, height: "280px", colors: ["#10b981"], library: bar_lib, suffix: " đ" %>
+      <%= column_chart @realized_by_stock, height: "280px", colors: ["#10b981"], library: bar_lib, suffix: " đ", thousands: "." %>
     <% else %>
       <div class="empty-state">Chưa có lệnh đã đóng.</div>
     <% end %>

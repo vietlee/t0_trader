@@ -37,7 +37,7 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Lời/lỗ đã hiện thực theo tháng</div></div>
     <% if @monthly.any? %>
-      <%= column_chart @monthly, height: "280px", colors: ["#10b981"], library: chart_lib %>
+      <%= column_chart @monthly, height: "280px", colors: ["#10b981"], suffix: " đ", thousands: ".", library: chart_lib %>
     <% else %>
       <div class="empty-state">Chưa có dữ liệu.</div>
     <% end %>
@@ -45,7 +45,7 @@
   <div class="card">
     <div class="card-header"><div class="card-title">Phân bổ lời/lỗ theo mã</div></div>
     <% if @by_stock.any? %>
-      <%= pie_chart @by_stock.map { |r| [r[:stock].symbol, r[:pnl].to_i] }, height: "280px",
+      <%= pie_chart @by_stock.map { |r| [r[:stock].symbol, r[:pnl].to_i] }, height: "280px", suffix: " đ", thousands: ".",
             colors: ["#10b981", "#38bdf8", "#a78bfa", "#f59e0b", "#f43f5e", "#22d3ee", "#84cc16"], library: { plugins: { legend: { labels: { color: "#aab6d0" } } } } %>
     <% else %>
       <div class="empty-state">Chưa có dữ liệu.</div>
