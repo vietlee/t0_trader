@@ -11,9 +11,11 @@
   <div class="card-title mb-3">Thêm mã theo dõi</div>
   <%= form_with url: watchlist_items_path, method: :post, class: "grid gap-3", data: { turbo: false } do %>
     <div class="grid gap-3" style="grid-template-columns: 1fr 1fr 1.4fr auto; align-items:end;">
-      <div>
+      <div class="ac-wrap" data-controller="autocomplete" data-autocomplete-url-value="<%= symbols_search_path %>">
         <label class="form-label">Mã</label>
-        <%= text_field_tag :symbol, nil, class: "form-input", style: "text-transform:uppercase", placeholder: "FPT", autocomplete: "off" %>
+        <%= text_field_tag :symbol, nil, class: "form-input", style: "text-transform:uppercase", placeholder: "Gõ mã hoặc tên...", autocomplete: "off",
+              data: { autocomplete_target: "input", action: "input->autocomplete#onInput keydown->autocomplete#onKey" } %>
+        <div class="ac-list" data-autocomplete-target="list"></div>
       </div>
       <div>
         <label class="form-label">Giá muốn mua (đ)</label>
@@ -32,17 +34,23 @@
   <% if @items.any? %>
     <div style="overflow-x:auto">
       <table class="data-table">
-        <thead><tr><th>Mã</th><th class="num">Giá hiện tại</th><th class="num">Giá muốn mua</th><th class="num">Chênh lệch</th><th>Ghi chú</th><th></th></tr></thead>
+        <thead><tr><th>Mã</th><th>Theo dõi</th><th class="num">Giá hiện tại</th><th class="num">Giá muốn mua</th><th class="num">Chênh lệch</th><th>Ghi chú</th><th></th></tr></thead>
         <tbody>
           <% @items.each do |item| %>
             <% price = item.stock.current_price %>
             <% hit = item.target_hit?(price) %>
-            <tr>
+            <tr style="<%= 'opacity:.5' unless item.active? %>">
               <td class="sym"><%= item.stock.symbol %><div style="font-size:11px;color:#7182a3;font-weight:400"><%= item.stock.name %></div></td>
+              <td>
+                <%= button_to toggle_watchlist_item_path(item), method: :patch, class: "switch #{'switch-on' if item.active?}", form: { style: "margin:0" } do %>
+                  <span class="switch-knob"></span>
+                <% end %>
+              </td>
               <td class="num"><%= price ? vnd(price, unit: "") : "—" %></td>
               <td class="num"><%= item.target_buy_price ? vnd(item.target_buy_price, unit: "") : "—" %></td>
               <td class="num">
-                <% if price && item.target_buy_price %>
+                <% if !item.active? %><span style="color:#5b6784">đã tắt</span>
+                <% elsif price && item.target_buy_price %>
                   <% diff = ((price - item.target_buy_price) / item.target_buy_price.to_f * 100).round(1) %>
                   <% if hit %><span class="badge badge-settled">Đã về vùng mua</span>
                   <% else %><span style="color:#8595b4">còn <%= diff %>%</span><% end %>

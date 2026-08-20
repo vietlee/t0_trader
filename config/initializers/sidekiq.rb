@@ -13,6 +13,10 @@ Sidekiq.configure_server do |config|
       "check_price_alerts" => {
         "cron"  => "1-59/2 9-15 * * 1-5 Asia/Ho_Chi_Minh", # 1' sau mỗi lần lấy giá
         "class" => "CheckPriceAlertsJob"
+      },
+      "import_symbols" => {
+        "cron"  => "0 6 * * 1 Asia/Ho_Chi_Minh", # 6h sáng Thứ 2 hàng tuần
+        "class" => "SymbolImportJob"
       }
     }
     Sidekiq::Cron::Job.load_from_hash!(schedule) if defined?(Sidekiq::Cron::Job)

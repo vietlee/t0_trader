@@ -17,6 +17,12 @@ class WatchlistItemsController < ApplicationController
     redirect_to watchlist_items_path, notice: "Đã thêm #{symbol} vào watchlist."
   end
 
+  def toggle
+    item = current_account.watchlist_items.find(params[:id])
+    item.update(active: !item.active)
+    redirect_to watchlist_items_path, notice: "#{item.stock.symbol}: #{item.active? ? 'BẬT' : 'TẮT'} theo dõi."
+  end
+
   def destroy
     current_account.watchlist_items.find(params[:id]).destroy
     redirect_to watchlist_items_path, notice: "Đã xoá khỏi watchlist."

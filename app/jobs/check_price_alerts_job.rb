@@ -74,7 +74,7 @@ class CheckPriceAlertsJob < ApplicationJob
   def check_watchlist(user, account)
     items = []
     logs = []
-    account.watchlist_items.includes(:stock).each do |wi|
+    account.watchlist_items.active.includes(:stock).each do |wi|
       price = wi.stock.current_price
       next unless price && wi.target_buy_price
       next unless wi.target_hit?(price)

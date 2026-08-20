@@ -177,6 +177,23 @@
 .confirm-msg { font-size:14px; color:#c7d3e8; line-height:1.6; margin-bottom:20px; }
 .confirm-actions { display:flex; gap:10px; justify-content:flex-end; }
 
+/* ============ TOGGLE SWITCH ============ */
+.switch { width:42px; height:23px; border-radius:999px; background:rgba(255,255,255,.14); border:none; cursor:pointer; padding:2px; display:inline-flex; align-items:center; transition:background .15s; }
+.switch-on { background:#10b981; }
+.switch-knob { width:19px; height:19px; border-radius:50%; background:#fff; transition:transform .15s; box-shadow:0 1px 3px rgba(0,0,0,.4); }
+.switch-on .switch-knob { transform:translateX(19px); }
+
+/* ============ AUTOCOMPLETE ============ */
+.ac-wrap { position:relative; }
+.ac-list { position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:60; display:none; max-height:280px; overflow-y:auto; background:#151b2b; border:1px solid rgba(255,255,255,.12); border-radius:12px; box-shadow:0 20px 50px -20px rgba(0,0,0,.8); }
+.ac-list.show { display:block; }
+.ac-item { display:flex; align-items:center; gap:9px; padding:9px 12px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.04); }
+.ac-item:last-child { border-bottom:none; }
+.ac-item:hover, .ac-item.active { background:rgba(16,185,129,.14); }
+.ac-sym { font-weight:700; color:#f3f7fc; font-size:13.5px; min-width:44px; }
+.ac-ex { font-size:10px; color:#6ee7b7; background:rgba(16,185,129,.12); padding:1px 6px; border-radius:6px; }
+.ac-name { font-size:12px; color:#8595b4; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
 /* ============ SL/TP ROWS ============ */
 .sltp-row { display:flex; gap:12px; align-items:end; flex-wrap:wrap; margin:0; padding:12px 14px; background:rgba(7,10,18,.4); border:1px solid rgba(255,255,255,.06); border-radius:12px; }
 .sltp-sym { flex:1; min-width:150px; display:flex; flex-direction:column; gap:3px; }

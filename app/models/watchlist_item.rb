@@ -5,6 +5,7 @@ class WatchlistItem < ApplicationRecord
   validates :stock_id, uniqueness: { scope: :account_id }
 
   scope :ordered, -> { joins(:stock).order("stocks.symbol") }
+  scope :active, -> { where(active: true) }
 
   # Giá đã về vùng mua mong muốn chưa?
   def target_hit?(price)

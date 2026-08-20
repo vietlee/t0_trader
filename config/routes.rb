@@ -32,8 +32,11 @@ Rails.application.routes.draw do
   resources :positions, only: :index
   resources :reports, only: :index
   resources :risk_targets, only: [:create]
-  resources :watchlist_items, only: [:index, :create, :destroy]
+  resources :watchlist_items, only: [:index, :create, :destroy] do
+    member { patch :toggle }
+  end
   get "tools/position-size", to: "tools#position_size", as: :position_size_tool
+  get "symbols/search", to: "symbols#search"
 
   namespace :ai do
     resources :insights, only: [:index, :create, :show]

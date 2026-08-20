@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_19_152921) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_20_014521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -99,6 +99,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_152921) do
     t.index ["symbol"], name: "index_stocks_on_symbol", unique: true
   end
 
+  create_table "symbol_refs", force: :cascade do |t|
+    t.string "symbol", null: false
+    t.string "name"
+    t.string "exchange"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["symbol"], name: "index_symbol_refs_on_symbol", unique: true
+  end
+
   create_table "trades", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.bigint "stock_id", null: false
@@ -150,6 +159,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_152921) do
     t.string "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["account_id", "stock_id"], name: "index_watchlist_items_on_account_id_and_stock_id", unique: true
     t.index ["account_id"], name: "index_watchlist_items_on_account_id"
     t.index ["stock_id"], name: "index_watchlist_items_on_stock_id"
