@@ -76,6 +76,15 @@ module ApplicationHelper
     end
   end
 
+  # Nút mở popup biểu đồ giá cho một mã.
+  def chart_btn(symbol)
+    sym = symbol.to_s.upcase
+    content_tag(:button, type: "button", class: "chart-btn", title: "Xem biểu đồ giá #{sym}",
+                onclick: "window.dispatchEvent(new CustomEvent('open-price-chart',{detail:{symbol:'#{escape_javascript(sym)}'}}))") do
+      raw('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>')
+    end
+  end
+
   def nav_link(name, path, icon)
     active = current_page?(path) || (path != root_path && request.path.start_with?(path))
     classes = ["nav-link"]

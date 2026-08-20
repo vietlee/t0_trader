@@ -1,0 +1,16 @@
+<div data-controller="price-chart">
+  <div class="qt-overlay" data-price-chart-target="modal" data-action="click->price-chart#backdrop">
+    <div class="qt-box" style="max-width:560px">
+      <div class="flex items-center justify-between" style="margin-bottom:6px">
+        <div>
+          <span class="sym" data-price-chart-target="symbol" style="font-size:18px"></span>
+          <span data-price-chart-target="name" style="font-size:12px;color:#7182a3;margin-left:6px"></span>
+        </div>
+        <button type="button" class="qt-x" data-action="price-chart#close" aria-label="Đóng">✕</button>
+      </div>
+      <div data-price-chart-target="stats" style="display:flex;gap:20px;flex-wrap:wrap;margin:6px 0 14px"></div>
+      <div data-price-chart-target="chart" style="height:240px"></div>
+      <div data-price-chart-target="status" class="form-hint" style="text-align:center;margin-top:8px"></div>
+    </div>
+  </div>
+</div>

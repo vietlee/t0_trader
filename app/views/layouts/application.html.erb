@@ -40,6 +40,7 @@
         <%= yield %>
       </main>
       <% unless content_for?(:hide_fab) %><%= render "layouts/quick_trade" %><% end %>
+      <%= render "layouts/price_chart" %>
     </div>
   </body>
 </html>

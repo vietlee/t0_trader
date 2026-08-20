@@ -55,6 +55,22 @@ class StocksController < ApplicationController
     redirect_back fallback_location: stocks_path, notice: notice
   end
 
+  # Dữ liệu mini biểu đồ giá ~1 tháng (JSON) cho popup.
+  def chart
+    symbol = params[:symbol].to_s.strip.upcase
+    hist = VnStockHistory.fetch(symbol)
+    if hist.nil?
+      return render json: { error: "Không lấy được dữ liệu giá cho #{symbol}." }, status: :ok
+    end
+
+    render json: {
+      symbol: symbol,
+      name: Stock.find_by(symbol: symbol)&.name || SymbolRef.find_by(symbol: symbol)&.name,
+      series: hist.series,
+      high: hist.high, low: hist.low, last: hist.last, change_pct: hist.change_pct
+    }
+  end
+
   private
 
   def set_stock

@@ -23,7 +23,7 @@
         <% @stocks.each do |s| %>
           <% pos = @positions_by_stock[s.id] %>
           <tr>
-            <td class="sym"><%= s.symbol %></td>
+            <td class="sym"><span class="flex items-center gap-1"><%= s.symbol %> <%= chart_btn(s.symbol) %></span></td>
             <td style="color:#c7d3e8"><%= s.name %></td>
             <td><span class="chip"><%= s.exchange %></span></td>
             <td style="color:#8595b4"><%= s.sector %></td>

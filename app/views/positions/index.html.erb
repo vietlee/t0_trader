@@ -45,7 +45,7 @@
         <tbody>
           <% @positions.each do |pos| %>
             <tr>
-              <td class="sym"><%= pos.stock.symbol %><div style="font-size:11px;color:#7182a3;font-weight:400"><%= pos.stock.name %></div></td>
+              <td class="sym"><span class="flex items-center gap-1"><%= pos.stock.symbol %> <%= chart_btn(pos.stock.symbol) %></span><div style="font-size:11px;color:#7182a3;font-weight:400"><%= pos.stock.name %></div></td>
               <td class="num"><%= number_with_delimiter(pos.quantity, delimiter: ".") %></td>
               <td class="num" style="color:#6ee7b7;font-weight:700"><%= number_with_delimiter(pos.available_qty, delimiter: ".") %></td>
               <td class="num" style="color:#fcd34d"><%= pos.pending_qty.positive? ? number_with_delimiter(pos.pending_qty, delimiter: ".") : "—" %></td>

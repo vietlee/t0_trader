@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   end
   get "tools/position-size", to: "tools#position_size", as: :position_size_tool
   get "symbols/search", to: "symbols#search"
+  get "price-chart/:symbol", to: "stocks#chart", as: :price_chart, constraints: { symbol: /[A-Za-z0-9]+/ }
 
   namespace :ai do
     resources :insights, only: [:index, :create, :show]

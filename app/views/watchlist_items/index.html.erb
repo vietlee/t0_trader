@@ -40,7 +40,7 @@
             <% price = item.stock.current_price %>
             <% hit = item.target_hit?(price) %>
             <tr style="<%= 'opacity:.5' unless item.active? %>">
-              <td class="sym"><%= item.stock.symbol %><div style="font-size:11px;color:#7182a3;font-weight:400"><%= item.stock.name %></div></td>
+              <td class="sym"><span class="flex items-center gap-1"><%= item.stock.symbol %> <%= chart_btn(item.stock.symbol) %></span><div style="font-size:11px;color:#7182a3;font-weight:400"><%= item.stock.name %></div></td>
               <td>
                 <%= button_to toggle_watchlist_item_path(item), method: :patch, class: "switch #{'switch-on' if item.active?}", form: { style: "margin:0" } do %>
                   <span class="switch-knob"></span>
