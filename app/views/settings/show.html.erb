@@ -65,7 +65,7 @@
         </div>
 
         <div class="card-title mb-3 mt-5">Quản trị rủi ro</div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr">
+        <div class="form-row aligned-row" style="grid-template-columns: 1fr 1fr 1fr">
           <div>
             <label class="form-label">% rủi ro mỗi lệnh</label>
             <%= number_field_tag :risk_per_trade_pct, current_user.risk_per_trade_pct, step: "0.5", class: "form-input" %>
