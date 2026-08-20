@@ -71,10 +71,10 @@
 .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; }
 
 /* ============ KPI ============ */
-.kpi-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.kpi-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
 .kpi { position: relative; overflow: hidden; }
 .kpi-label { font-size: 12px; color:#8595b4; font-weight: 500; display:flex; align-items:center; gap:6px; }
-.kpi-value { font-size: 25px; font-weight: 750; margin-top: 8px; letter-spacing: -.5px; line-height: 1.1; }
+.kpi-value { font-size: 21px; font-weight: 750; margin-top: 8px; letter-spacing: -.5px; line-height: 1.15; white-space: nowrap; }
 .kpi-sub { font-size: 12.5px; margin-top: 6px; color:#8595b4; }
 .kpi-accent { position:absolute; right:-18px; top:-18px; width:80px; height:80px; border-radius:50%; opacity:.14; filter: blur(6px); }
 
