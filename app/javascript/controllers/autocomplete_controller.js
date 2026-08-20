@@ -13,6 +13,8 @@ export default class extends Controller {
   disconnect() { document.removeEventListener("click", this.onDocClick) }
 
   onInput() {
+    // Bỏ qua sự kiện input phát ra do vừa chọn (tránh mở lại dropdown).
+    if (this.justPicked) { this.justPicked = false; return }
     const q = this.inputTarget.value.trim()
     clearTimeout(this.timer)
     if (q.length < 1) { this.close(); return }
@@ -43,8 +45,11 @@ export default class extends Controller {
   }
 
   pick(symbol) {
+    this.justPicked = true
+    clearTimeout(this.timer)
     this.inputTarget.value = symbol
     this.inputTarget.dispatchEvent(new Event("input", { bubbles: true }))
+    this.inputTarget.dispatchEvent(new Event("change", { bubbles: true }))
     this.close()
     this.inputTarget.focus()
   }
