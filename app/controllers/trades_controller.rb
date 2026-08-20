@@ -14,10 +14,15 @@ class TradesController < ApplicationController
   end
 
   def new
+    traded_at = if params[:traded_on].present?
+      (Date.parse(params[:traded_on]).to_time.change(hour: 10) rescue Time.current)
+    else
+      Time.current
+    end
     @trade = current_account.trades.new(
       side: params[:side].presence || :buy,
       status: :pending,
-      traded_at: Time.current,
+      traded_at: traded_at,
       quantity: nil,
       price: params[:price].presence
     )
@@ -43,18 +48,19 @@ class TradesController < ApplicationController
 
     stock = Stock.find_or_create_by(symbol: result.symbol)
     label = result.side == "buy" ? "MUA" : "BÁN"
+    traded_at = result.traded_on ? result.traded_on.to_time.change(hour: 10) : Time.current
+    prefill = { side: result.side, symbol: result.symbol, price: result.price, traded_on: result.traded_on }
 
     if result.quantity.to_i.positive?
       trade = current_account.trades.new(stock: stock, side: result.side, quantity: result.quantity,
-                                         price: result.price, traded_at: Time.current, status: :pending)
+                                         price: result.price, traded_at: traded_at, status: :pending)
       if trade.save
-        redirect_to trades_path, notice: "✓ Đã ghi #{label} #{helpers.number_with_delimiter(result.quantity, delimiter: '.')} #{stock.symbol} @ #{helpers.number_with_delimiter(result.price, delimiter: '.')}đ."
+        redirect_to trades_path, notice: "✓ Đã ghi #{label} #{helpers.number_with_delimiter(result.quantity, delimiter: '.')} #{stock.symbol} @ #{helpers.number_with_delimiter(result.price, delimiter: '.')}đ#{" ngày #{result.traded_on.strftime('%d/%m')}" if result.traded_on}."
       else
-        redirect_to new_trade_path(side: result.side, symbol: result.symbol, price: result.price),
-                    alert: trade.errors.full_messages.to_sentence
+        redirect_to new_trade_path(prefill), alert: trade.errors.full_messages.to_sentence
       end
     else
-      redirect_to new_trade_path(side: result.side, symbol: result.symbol, price: result.price),
+      redirect_to new_trade_path(prefill),
                   notice: "Đã nhận diện #{label} #{stock.symbol} @ #{helpers.number_with_delimiter(result.price, delimiter: '.')}đ — nhập khối lượng để hoàn tất."
     end
   end

@@ -54,9 +54,8 @@ class Trade < ApplicationRecord
 
   def set_defaults
     self.traded_at ||= Time.current
-    if traded_at.present?
-      self.settlement_date ||= TradingCalendar.settlement_date(traded_at.to_date)
-    end
+    # Luôn tính lại ngày về theo ngày khớp (cập nhật đúng khi sửa ngày mua).
+    self.settlement_date = TradingCalendar.settlement_date(traded_at.to_date) if traded_at.present?
     auto_fill_costs
   end
 
