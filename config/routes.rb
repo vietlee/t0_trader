@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   end
 
   resource :settings, only: [:show, :update], controller: :settings
+  post "settings/send-review", to: "settings#send_review", as: :send_review
   resources :trading_holidays, only: [:index, :create, :destroy]
 
   # Health check

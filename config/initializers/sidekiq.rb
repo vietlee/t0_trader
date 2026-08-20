@@ -17,6 +17,10 @@ Sidekiq.configure_server do |config|
       "import_symbols" => {
         "cron"  => "0 6 * * 1 Asia/Ho_Chi_Minh", # 6h sáng Thứ 2 hàng tuần
         "class" => "SymbolImportJob"
+      },
+      "ai_review" => {
+        "cron"  => "0 7 * * * Asia/Ho_Chi_Minh", # 7h sáng mỗi ngày (job tự lọc user tới hạn)
+        "class" => "AiReviewJob"
       }
     }
     Sidekiq::Cron::Job.load_from_hash!(schedule) if defined?(Sidekiq::Cron::Job)

@@ -20,7 +20,8 @@ class User < ApplicationRecord
     "alert_threshold_pct" => 5.0,    # ngưỡng % lời/lỗ để cảnh báo
     "risk_per_trade_pct" => 2.0,     # % vốn rủi ro mỗi lệnh (position sizing)
     "max_position_pct"   => 20.0,    # cảnh báo khi 1 mã > % NAV
-    "max_daily_trades"   => 0        # chặn overtrading (0 = tắt)
+    "max_daily_trades"   => 0,       # chặn overtrading (0 = tắt)
+    "ai_review_frequency" => "off"   # off / weekly / monthly — AI review tự gửi email
   }.freeze
 
   def pref(key)
@@ -56,6 +57,7 @@ class User < ApplicationRecord
   def risk_per_trade_pct = pref("risk_per_trade_pct").to_f
   def max_position_pct   = pref("max_position_pct").to_f
   def max_daily_trades   = pref("max_daily_trades").to_i
+  def ai_review_frequency = pref("ai_review_frequency").to_s
 
   def update_preferences(hash)
     self.preferences = (preferences || {}).merge(hash.stringify_keys)

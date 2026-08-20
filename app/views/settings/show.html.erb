@@ -47,6 +47,11 @@
             <%= check_box_tag :ai_enabled, "1", current_user.ai_enabled? %>
             <span style="font-size:14px;color:#c7d3e8">Bật tính năng AI</span>
           </label>
+          <div style="max-width:320px">
+            <label class="form-label">AI review tự gửi email</label>
+            <%= select_tag :ai_review_frequency, options_for_select([["Tắt", "off"], ["Hàng tuần (Thứ 2)", "weekly"], ["Hàng tháng (ngày 1)", "monthly"]], current_user.ai_review_frequency), class: "form-select" %>
+            <div class="form-hint">AI tự tổng kết hiệu suất + gợi ý cải thiện, gửi vào email của bạn. Cần bật AI + có API key.</div>
+          </div>
         </div>
         <div class="form-hint mt-2">
           Trạng thái API key:
@@ -88,9 +93,15 @@
     </div>
 
     <div class="card">
+      <div class="card-title mb-2">Bản đánh giá AI</div>
+      <div style="font-size:13px;color:#8595b4;margin-bottom:12px">Gửi thử một bản đánh giá danh mục từ AI vào email của bạn ngay bây giờ.</div>
+      <%= button_to "Gửi review AI ngay", send_review_path, class: "btn btn-ghost" %>
+    </div>
+
+    <div class="card">
       <div class="card-title mb-2">Tài khoản</div>
       <div style="font-size:13.5px;color:#c7d3e8"><%= current_user.email %></div>
-      <div class="form-hint">Đổi mật khẩu: đăng xuất rồi dùng "Quên mật khẩu", hoặc liên hệ quản trị.</div>
+      <div class="form-hint">Đổi email/mật khẩu ở trang Hồ sơ (bấm email ở thanh bên).</div>
     </div>
   </div>
 

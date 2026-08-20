@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#0b0f1a;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f1a;padding:24px 0;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#151b2b;border-radius:16px;border:1px solid #232a3d;overflow:hidden;">
+        <tr><td style="padding:22px 26px;border-bottom:1px solid #232a3d;">
+          <span style="display:inline-block;width:30px;height:30px;background:#10b981;border-radius:8px;color:#04120c;font-weight:bold;text-align:center;line-height:30px;font-size:13px;">T0</span>
+          <span style="color:#f3f7fc;font-size:16px;font-weight:bold;vertical-align:middle;margin-left:8px;">T0 Trader</span>
+        </td></tr>
+        <tr><td style="padding:22px 26px 8px;">
+          <div style="color:#c4b5fd;font-size:13px;font-weight:bold;">✦ ĐÁNH GIÁ DANH MỤC TỪ AI</div>
+          <div style="color:#8595b4;font-size:12px;margin-top:4px;"><%= @insight.created_at.strftime("%d/%m/%Y") %></div>
+        </td></tr>
+        <tr><td style="padding:4px 26px 20px;color:#c7d3e8;font-size:14px;line-height:1.7;">
+          <div class="md"><%= simple_markdown(@insight.content) %></div>
+        </td></tr>
+        <tr><td style="padding:0 26px 24px;font-size:14px;color:#9fb0cc;">
+          Xem chi tiết: <a href="https://stock.czin.net/ai/insights" style="color:#6ee7b7;">stock.czin.net/ai/insights</a>
+        </td></tr>
+        <tr><td style="padding:16px 26px;border-top:1px solid #232a3d;color:#5b6784;font-size:11px;">
+          Phân tích hành vi dựa trên dữ liệu của bạn, không phải khuyến nghị đầu tư. Đổi tần suất/tắt trong Cài đặt.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
